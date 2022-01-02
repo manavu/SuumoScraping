@@ -1,0 +1,16 @@
+{
+    "name": "SuumoScraping",
+    "dockerComposeFile": ["./docker-compose.yml"],
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    // コンテナ起動後にコマンドを実行する
+    // "postStartCommand": "dotnet dev-certs https",
+    "postCreateCommand": "dotnet dev-certs https",
+    "settings": [],
+    "extensions": [
+        "ms-dotnettools.csharp",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "aliasadidev.nugetpackagemanagergui"
+    ]
+}

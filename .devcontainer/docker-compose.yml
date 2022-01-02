@@ -1,0 +1,46 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7.11
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=scrapingdb
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+      - TZ=Asia/Tokyo
+    ports:
+      - 3306:3306
+    volumes:
+      - /f/MySql/Data:/var/lib/mysql:cached
+      # - ./db/data:/var/lib/mysql
+      # windows の場合は my.cnf を読み込み専用にすることでマウント先も読み込み専用になる
+      - ./db/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: dotnet
+#    ports:
+#      - 5000:5000
+#      - 5001:5001
+    volumes:
+      - ../:/workspace:cached
+    links:
+      - db
+    tty: true # make container stay launched
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    links:
+      - db
+    ports:
+      - 8080:80
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
+      

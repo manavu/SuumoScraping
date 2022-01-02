@@ -1,23 +1,18 @@
 # SuumoScraping
 
-## ŠÂ‹«\’z
+## ç’°å¢ƒæ§‹ç¯‰
 
-Visual Studio 2019 ˆÈ~‚ðƒCƒ“ƒXƒg[ƒ‹‚µ‚Ü‚·B
+VS Code ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¾ã™ã€‚
 
-.net core sdk 3.1 ‚ðƒCƒ“ƒXƒg[ƒ‹‚µ‚Ü‚·B
+æ‹¡å¼µæ©Ÿèƒ½ã§ Remote - Containers ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ã€‚
 
-DB‚ÉMySql5.7 ˆÈ~‚ðƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä•K—vÅ’áŒÀ‚ÌŠÂ‹«‚ð\’z‚µ‚Æ‚«‚Ü‚·B
+ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ•ã‚©ãƒ«ãƒ€ã‚’é–‹ãã€‚
 
-Visual Studio ‚ð‹N“®‚µAƒ\ƒŠƒ…[ƒVƒ‡ƒ“‚ðƒrƒ‹ƒh‚µ‚Ü‚·B
+å·¦ä¸‹ã«ã‚ã‚‹>< ã‚¢ã‚¤ã‚³ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ã€Open Folder IN Container ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ã€è©²å½“ãƒ•ã‚©ãƒ«ãƒ€ã‚’é¸æŠžã™ã‚‹
 
-ƒpƒbƒP[ƒWƒ}ƒl[ƒWƒƒƒRƒ“ƒ\[ƒ‹‚ðŠJ‚«‚Ü‚·B
-‰º‹L‚ÌƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚ÌConnectionString ‚Ìˆø”‚ð“KØ‚È’l‚É•ÏX‚µ‚ÄƒpƒbƒP[ƒWƒ}ƒl[ƒWƒƒƒRƒ“ƒ\[ƒ‹‚©‚çŽÀs‚µ‚Ü‚·B
+$ curl -k -L -m 0  https://localhost:5001/Bukken/Import2
 
-```
-update-database -verbose -ConnectionProviderName "MySql.Data.MySqlClient" -ConnectionString "server=localhost;database=ScrapingDb;port=3306;characterset=utf8;uid=****;pwd=****;"
-```
-
-ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌŽÀsŽž‚É‚ÍƒV[ƒNƒŒƒbƒg‚ðŽg‚Á‚ÄÚ‘±•¶Žš—ñ‚ð“n‚µ‚Ä‚¢‚é‚Ì‚ÅA‰º‹L‚ÌƒRƒ}ƒ“ƒh‚ÅƒV[ƒNƒŒƒbƒg‚ð’Ç‰Á‚µ‚Ü‚·B
+ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œæ™‚ã«ã¯ã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆã‚’ä½¿ã£ã¦æŽ¥ç¶šæ–‡å­—åˆ—ã‚’æ¸¡ã—ã¦ã„ã‚‹ã®ã§ã€ä¸‹è¨˜ã®ã‚³ãƒžãƒ³ãƒ‰ã§ã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆã‚’è¿½åŠ ã—ã¾ã™ã€‚
 
 ```
 dotnet user-secrets init --id "bde44560-6d21-40eb-bd09-82c35fa5c7cf"

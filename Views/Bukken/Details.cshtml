@@ -1,0 +1,202 @@
+﻿@model SuumoScraping.ViewModels.BukkenInfo
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+    <h4>Details</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DetailUrl)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DetailUrl)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Access1)
+        </dt>
+
+        <dd class="col-sm-9">
+            <p>@Html.DisplayFor(model => model.Access1)<br />
+            @Html.DisplayFor(model => model.Access2)<br />
+            @Html.DisplayFor(model => model.Access3)</p>
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Layout)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Layout)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FloorArea)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.FloorArea)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Balcony)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Balcony)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.BuiltYears)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.BuiltYears)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImportedDate)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ImportedDate)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ManagementFee)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ManagementFee)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RepairingDeposit)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RepairingDeposit)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RepairingFund)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RepairingFund)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Floor)
+        </dt>
+
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Floor)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Direction)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Direction)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.MoveInTime)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.MoveInTime)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RightsStyle)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RightsStyle)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Structure)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Structure)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UseDistrict)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.UseDistrict)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CompanyAddress)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CompanyAddress)
+        </dd>
+
+        @foreach (var file in Model.Files)
+        {
+            var imgUrlAction = Url.Action("Data", "File", new { id = file.Id });
+
+            <dt class="col-sm-3">
+                @Html.DisplayFor(model => file.Title)
+            </dt>
+            <dd class="col-sm-9">
+                <a href="@imgUrlAction" data-lightbox="lightbox" data-title="@file.Title">
+                    <img alt="画像" src="@imgUrlAction" width="452" height="339" />
+                </a>
+            </dd>
+        }
+    </dl>
+</div>
+<p>
+    @Html.ReferrerLink("Back to List")
+</p>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
+    </script>
+}
