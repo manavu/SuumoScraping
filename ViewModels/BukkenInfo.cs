@@ -10,6 +10,7 @@
         public BukkenInfo()
         {
             Files = new List<FileInfo>();
+            Prices = new List<PriceInfo>();
         }
 
         [Display(Name = "ファイル")]
@@ -85,6 +86,9 @@
 
         [Display(Name = "企業住所")]
         public string CompanyAddress { get; set; }
+
+        [Display(Name = "企業住所")]
+        public IEnumerable<PriceInfo> Prices { get; set; }
 
         [Display(Name = "インポート回数")]
         public int ImportCount { get; set; }

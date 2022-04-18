@@ -4,26 +4,14 @@ namespace SuumoScraping.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.EntityFrameworkCore;
 
-    [ComplexType]
-    public class Company
-    {
-        [MaxLength(100)]
-        public string Name { get; set; }
-
-        [MaxLength(100)]
-        public string Address { get; set; }
-
-        [MaxLength(80)]
-        public string TakkenLicense { get; set; }
-
-        [MaxLength(80)]
-        public string TransactionAspect { get; set; }
-    }
-
+    [Table("bukkens")]
+    [Index(nameof(DetailUrl), nameof(ImportedDate), Name = "IX_Bukkens_DetailUrl_ImportedDate")]
+    [Index(nameof(ImportedDate), nameof(DetailUrl), Name = "IX_Bukkens_ImportedDate_DetailUrl")]
+    // [Index(nameof(FullText.Id), Name="IX_FullText_Id")]  // こういうことはできないので、OnModelCreation で対応するしかないかも
     public partial class Bukken
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Bukken()
         {
             this.Files = new HashSet<BukkenFile>();
@@ -44,14 +32,15 @@ namespace SuumoScraping.Models
 
         [Display(Name = "価格")]
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price1 { get; set; }
 
         [Display(Name = "価格（最大値）")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal? Price2 { get; set; }
 
         [Required]
         [MaxLength(200)]
-        [Index("IX_Bukkens_DetailUrl_ImportedDate", 2)]
         public string DetailUrl { get; set; }
 
         [Required]
@@ -83,9 +72,11 @@ namespace SuumoScraping.Models
 
         [Display(Name = "専有面積")]
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal FloorArea1 { get; set; }
 
         [Display(Name = "専有面積（坪）")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal? FloorTubo { get; set; }
 
         [Display(Name = "計測方法")]
@@ -102,8 +93,7 @@ namespace SuumoScraping.Models
         public string BuiltYears { get; set; }
 
         [Required]
-        [Column(TypeName = "Date")]
-        [Index("IX_Bukkens_DetailUrl_ImportedDate", 1)]
+        [Column(TypeName = "date")]
         public System.DateTime ImportedDate { get; set; }
 
         [MaxLength(50)]
@@ -141,9 +131,9 @@ namespace SuumoScraping.Models
 
         public Company Company { get; set; }
 
+        [ForeignKey("FullText_Id")]
         public virtual BukkenFulltext FullText { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BukkenFile> Files { get; set; }
     }
 }

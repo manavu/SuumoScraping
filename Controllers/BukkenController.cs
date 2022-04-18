@@ -9,6 +9,7 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Microsoft.EntityFrameworkCore;
     using LinqKit;
     using SuumoScraping.Models;
     using SuumoScraping.ViewModels;
@@ -18,16 +19,19 @@
     {
         private readonly IScrapingContextFactory _scrapingContextFactory;
 
-        public BukkenController(IScrapingContextFactory scrapingContextFactory)
+        private readonly ILogger<SuumoDataProvider> _logger;
+
+        public BukkenController(IScrapingContextFactory scrapingContextFactory, ILogger<SuumoDataProvider> logger)
         {
             _scrapingContextFactory = scrapingContextFactory;
+            _logger = logger;
         }
 
         public ActionResult Test()
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                db.Database.CommandTimeout = 0;
+                // db.Database.CommandTimeout = 0;
 
                 var urls = from bukken in db.Bukkens
                            group bukken.DetailUrl by bukken.DetailUrl into g
@@ -55,17 +59,20 @@
             using (var db = _scrapingContextFactory.Create())
             using (var tx = db.Database.BeginTransaction())
             {
-                db.Database.CommandTimeout = 0;
+                db.Database.SetCommandTimeout(0);
 
                 var bukkens = db.Bukkens
-                    .Include("Files")
-                    .Include("FullText")
+                    .Include(m => m.Files)
+                    .ThenInclude(m => m.File)
+                    .Include(m => m.FullText)
                     .Where(m => m.DetailUrl == url)
                     .OrderBy(m => m.ImportedDate)
                     .ToList();
 
                 var newBukken = db.NewBukkens
-                    .Include("PriceChangesets")
+                    .Include(m => m.PriceChangesets)
+                    .Include(m => m.Files)
+                    .ThenInclude(m => m.File)
                     .SingleOrDefault(m => m.DetailUrl == url);
 
                 if (newBukken == null)
@@ -94,7 +101,13 @@
                         }
                     }
 
-                    newBukken.Company = bukken.Company;
+                    // この方法では警告がでる
+                    // newBukken.Company = bukken.Company;
+                    newBukken.Company.Name = bukken.Company.Name;
+                    newBukken.Company.Address = bukken.Company.Address;
+                    newBukken.Company.TakkenLicense = bukken.Company.TakkenLicense;
+                    newBukken.Company.TransactionAspect = bukken.Company.TransactionAspect;
+
                     newBukken.Direction = bukken.Direction;
                     newBukken.Floor = bukken.Floor;
                     newBukken.FloorArea = bukken.FloorArea;
@@ -153,7 +166,9 @@
                     while (bukken.Files.Any())
                     {
                         var bukkenFile = bukken.Files.First();
-                        db.BukkenFiles.Remove(bukkenFile);
+                        // この方法ではNULLが入るだけなのでちゃんとエンティティも消す
+                        bukken.Files.Remove(bukkenFile);
+                        db.Set<BukkenFile>().Remove(bukkenFile);
                     }
 
                     if (bukken.FullText != null)
@@ -169,12 +184,20 @@
                     db.SaveChanges();
                     tx.Commit();
                 }
-                catch (System.Data.Entity.Infrastructure.DbUpdateException e)
+                catch (DbUpdateException e)
                 {
                     var msg = e.Message;
                     System.Diagnostics.Debug.WriteLine(msg);
                 }
+                /*
                 catch (System.Data.Entity.Validation.DbEntityValidationException e)
+                {
+                    // EF Core にはモデル検証がないっぽい。SaveChanges をオーバーライドして自前で実装する
+                    // バリデーターは何を使うべきか？
+                    var msg = e.Message;
+                    System.Diagnostics.Debug.WriteLine(msg);
+                }*/
+                catch (Exception e)
                 {
                     var msg = e.Message;
                     System.Diagnostics.Debug.WriteLine(msg);
@@ -182,11 +205,15 @@
             }
         }
 
+        /// <summary>
+        /// FullText のデータを生成する
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Test2()
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                db.Database.CommandTimeout = 0;
+                // db.Database.CommandTimeout = 0;
 
                 var bukkenIds = db.Bukkens
                     .Where(m => m.FullText == null)
@@ -229,42 +256,6 @@
                         db2.SaveChanges();
                     }
                 });
-
-                /*
-                foreach (var bukkenId in bukkenIds)
-                {
-                    System.Diagnostics.Debug.WriteLine(bukkenId.ToString());
-
-                    using (var db2 = new ScrapingContext())
-                    {
-                        var src = db2.Bukkens.Single(m => m.Id == bukkenId);
-
-                        var tmp = new System.Text.StringBuilder();
-
-                        if (!string.IsNullOrEmpty(src.Access))
-                        {
-                            tmp.Append(src.Access);
-                        }
-
-                        if (!string.IsNullOrEmpty(src.Access2))
-                        {
-                            tmp.AppendFormat("、{0}", src.Access2);
-                        }
-
-                        if (!string.IsNullOrEmpty(src.Access3))
-                        {
-                            tmp.AppendFormat("、{0}", src.Access3);
-                        }
-
-                        src.FullText = new BukkenFulltext();
-
-                        src.FullText.AccessBigram = string.Join(" ", tmp.ToString().ToNGram(2));
-
-                        src.FullText.AddressBigram = string.Join(" ", src.Address.ToNGram(2));
-
-                        db2.SaveChanges();
-                    }
-                }*/
             }
 
             return this.Content("aa");
@@ -296,7 +287,7 @@
             // grid-column=ImportedDate&grid-dir=0
             using (var db = _scrapingContextFactory.Create())
             {
-                db.Database.CommandTimeout = 0;
+                // db.Database.CommandTimeout = 0;
 
                 var bukkens = db.NewBukkens.AsQueryable();
 
@@ -418,6 +409,8 @@
             using (var db = _scrapingContextFactory.Create())
             {
                 var model = db.NewBukkens
+                    .Include(m => m.PriceChangesets)
+                    .Include(m => m.Files)
                     .Where(m => m.Id == id)
                     .Select(m => new BukkenInfo
                     {
@@ -453,6 +446,12 @@
                             Id = n.File.Id,
                             Title = n.Type
                         }),
+                        Prices = m.PriceChangesets
+                            .Select(n => new PriceInfo()
+                            {
+                                ChangedAt = n.ChangedAt,
+                                Value = n.Text,
+                            }),
                         ImportCount = m.ImportCount,
                     })
                     .Single();
@@ -464,7 +463,7 @@
         [HttpGet]
         public ActionResult Import()
         {
-            using (var provider = new LoggingDataProvider(new SuumoDataProvider()))
+            using (var provider = new LoggingDataProvider(new SuumoDataProvider(), _logger))
             {
                 var service = new SuumoScraper(provider, _scrapingContextFactory);
 
@@ -474,28 +473,29 @@
             return RedirectToAction("Filter");
         }
 
-        [HttpGet]
-        public ActionResult Import2()
-        {
-            // 非同期IOを許可する
-            var syncIoFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpBodyControlFeature>();
-            if (syncIoFeature != null)
-            {
-                syncIoFeature.AllowSynchronousIO = true;
-            }
+        /*
+                [HttpGet]
+                public ActionResult Import2(ILogger<SuumoDataProvider> logger)
+                {
+                    // 非同期IOを許可する
+                    var syncIoFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpBodyControlFeature>();
+                    if (syncIoFeature != null)
+                    {
+                        syncIoFeature.AllowSynchronousIO = true;
+                    }
 
-            Response.StatusCode = 200;
-            Response.ContentType = "text/plain";
+                    Response.StatusCode = 200;
+                    Response.ContentType = "text/plain";
 
-            using (var sw = new System.IO.StreamWriter(Response.Body))
-            using (var provider = new LoggingDataProvider(new SuumoDataProvider(), sw))
-            {
-                var service = new SuumoScraper(provider, _scrapingContextFactory);
+                    using (var sw = new System.IO.StreamWriter(Response.Body))
+                    using (var provider = new LoggingDataProvider(new SuumoDataProvider(), sw))
+                    {
+                        var service = new SuumoScraper(provider, _scrapingContextFactory);
 
-                service.Execute();
-            }
+                        service.Execute();
+                    }
 
-            return new EmptyResult();
-        }
+                    return new EmptyResult();
+                }*/
     }
 }
