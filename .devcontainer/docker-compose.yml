@@ -12,8 +12,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - /f/MySql/Data:/var/lib/mysql:cached
-      # - ./db/data:/var/lib/mysql
+      - ./db/data:/var/lib/mysql
       # windows の場合は my.cnf を読み込み専用にすることでマウント先も読み込み専用になる
       - ./db/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
   app:

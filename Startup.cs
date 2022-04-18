@@ -10,7 +10,10 @@ namespace SuumoScraping
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using SuumoScraping.Models;
+    using Pomelo.EntityFrameworkCore.MySql;
+    using Microsoft.EntityFrameworkCore;
 
     public class Startup
     {
@@ -24,7 +27,21 @@ namespace SuumoScraping
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IScrapingContextFactory>(_ => new ScrapingContextFactory(Configuration));
+            var connectionString = "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
+            //var connectionString = "server=db;database=ScrapingDb2;port=3306;uid=root;password=root;characterset=utf8;";
+            services.AddScoped<IScrapingContextFactory, ScrapingContextFactory>();  // (_ => new ScrapingContextFactory(Configuration));
+
+            var serverVersion = new MySqlServerVersion(new Version(5, 7, 11));
+
+            // Replace 'YourDbContext' with the name of your own DbContext derived class.
+            services.AddDbContext<ScrapingContext>(
+                dbContextOptions => dbContextOptions
+                    .UseMySql(connectionString, serverVersion)
+                    // The following three options help with debugging, but should
+                    // be changed or removed for production.
+                    .LogTo(Console.WriteLine, LogLevel.Information)
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors());
 
             // add memory cache
             services.AddDistributedMemoryCache();

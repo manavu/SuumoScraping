@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using SuumoScraping.Extensions;
+    using Microsoft.Extensions.Logging;
 
     public class SuumoScraper
     {
@@ -22,56 +23,59 @@
 
         public void Execute()
         {
-            var data1 = new List<(string, string)>();
+            var data = new List<(string, string)>();
 
             // 新宿
             // ParseRootPage("https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/", detailPages);
             // var bukken2 = this._provider.GetBukkenDetail("https://suumo.jp" + "/ms/chuko/tokyo/sc_setagaya/nc_94305250/");
 
             // 都心部
-            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_01/", data1);
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_01/", data);
 
             // 23区東部
-            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_02/", data1);
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_02/", data);
 
             // 23区北部
-            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_03/", data1);
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_03/", data);
 
             // 23区西部
-            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_04/", data1);
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_04/", data);
 
             // 23区南部
-            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_05/", data1);
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_05/", data);
 
-            var count = 0;
+            // 都下
+            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_06/", data);
+
+            // 武蔵小杉駅
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/kanagawa/ek_38720/", data);
+
+            // 武蔵浦和駅
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/saitama/ek_38700/", data);
+
+            // 戸田公園駅
+            this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/saitama/ek_26170/", data);
 
             // 詳細ページを読み込む
-            foreach (var data in data1)
+            foreach (var datum in data)
             {
                 using var db = this._scrapingContextFactory.Create();
 
-                {
-                    var msg = string.Format("count:{0}", count++);
-                    System.Diagnostics.Debug.WriteLine(msg);
-                }
-
-                if (db.Bukkens.Any(m => m.ImportedDate == _importedDate && m.DetailUrl == data.Item2))
+                if (db.Bukkens.Any(m => m.ImportedDate == _importedDate && m.DetailUrl == datum.Item2))
                 {
                     continue;
                 }
 
                 try
                 {
-                    var src = this._provider.GetBukkenDetail("https://suumo.jp" + data.Item2);
-
-                    // src.GetOrDefault("");
+                    var src = this._provider.GetBukkenDetail("https://suumo.jp" + datum.Item2);
 
                     var company = new Company();
                     company.Name = src.GetOrDefault("企業名");
                     company.Address = src.GetOrDefault("企業住所");
                     company.TakkenLicense = src.GetOrDefault("宅建");
                     company.TransactionAspect = src.GetOrDefault("取引態様");
-                   
+
                     var bukken = new Bukken();
                     bukken.Price = src.GetOrDefault("価格");
                     bukken.Price1 = src.GetOrDefault("価格最小", "0").ToDigit();
@@ -101,7 +105,7 @@
                     bukken.Title = src.GetOrDefault("タイトル");
 
                     bukken.ImportedDate = _importedDate;
-                    bukken.DetailUrl = data.Item2;
+                    bukken.DetailUrl = datum.Item2;
 
                     for (var i = 1; i < 255; i++)
                     {

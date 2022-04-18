@@ -1,16 +1,29 @@
 {
     "name": "SuumoScraping",
-    "dockerComposeFile": ["./docker-compose.yml"],
+    "dockerComposeFile": [
+        "./docker-compose.yml"
+    ],
     "service": "app",
     "workspaceFolder": "/workspace",
     // コンテナ起動後にコマンドを実行する
     // "postStartCommand": "dotnet dev-certs https",
     "postCreateCommand": "dotnet dev-certs https",
-    "settings": [],
-    "extensions": [
-        "ms-dotnettools.csharp",
-        "eamodio.gitlens",
-        "mhutchie.git-graph",
-        "aliasadidev.nugetpackagemanagergui"
-    ]
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "editor.formatOnPaste": true,
+                "editor.formatOnSave": true,
+                "editor.formatOnType": true
+            },
+            "extensions": [
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.csharp",
+                "eamodio.gitlens",
+                "mhutchie.git-graph",
+                "aliasadidev.nugetpackagemanagergui",
+                "ms-azuretools.vscode-azureappservice",
+                "ms-azuretools.vscode-cosmosdb"
+            ]
+        }
+    }
 }
