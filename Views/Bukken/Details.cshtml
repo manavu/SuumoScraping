@@ -20,9 +20,13 @@
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-
         <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Price)
+            <ul>
+                @foreach (var price in Model.Prices.OrderByDescending(m => m.ChangedAt))
+                {
+                    <li>@price.ChangedAt.ToShortDateString() @price.Value</li>
+                }
+            </ul>
         </dd>
 
         <dt class="col-sm-3">
@@ -47,8 +51,8 @@
 
         <dd class="col-sm-9">
             <p>@Html.DisplayFor(model => model.Access1)<br />
-            @Html.DisplayFor(model => model.Access2)<br />
-            @Html.DisplayFor(model => model.Access3)</p>
+                @Html.DisplayFor(model => model.Access2)<br />
+                @Html.DisplayFor(model => model.Access3)</p>
         </dd>
 
         <dt class="col-sm-3">
@@ -193,10 +197,10 @@
 
 @section scripts
 {
-    <script type="text/javascript">
-        $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
-            event.preventDefault();
-            $(this).ekkoLightbox();
-        });
-    </script>
+<script type="text/javascript">
+    $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+</script>
 }

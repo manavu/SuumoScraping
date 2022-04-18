@@ -4,10 +4,12 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.EntityFrameworkCore;
 
+    [Table("newbukkens")]
+    [Index(nameof(DetailUrl), Name = "IX_Bukkens_DetailUrl", IsUnique = true)]
     public partial class NewBukken
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NewBukken()
         {
             this.Files = new HashSet<NewBukkenFile>();
@@ -17,26 +19,13 @@
 
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
-        /*
-        [Display(Name = "価格（文字列）")]
-        [Required]
-        [MaxLength(50)]
-        public string Price { get; set; }
 
-        [Display(Name = "価格")]
-        [Required]
-        public decimal Price1 { get; set; }
-
-        [Display(Name = "価格（最大値）")]
-        public decimal? Price2 { get; set; }
-        */
         [Required]
         [MaxLength(200)]
-        [Index("IX_Bukkens_DetailUrl", IsUnique = true)]
         public string DetailUrl { get; set; }
 
         [Required]
@@ -68,9 +57,11 @@
 
         [Display(Name = "専有面積")]
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal FloorArea1 { get; set; }
 
         [Display(Name = "専有面積（坪）")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal? FloorTubo { get; set; }
 
         [Display(Name = "計測方法")]
@@ -82,6 +73,7 @@
         public string Balcony { get; set; }
 
         [Display(Name = "築年月")]
+        [Column(TypeName = "datetime")] // 型を指定しないと datetime(6) になる
         public DateTime? BuiltYears { get; set; }
 
         [MaxLength(50)]
@@ -119,46 +111,18 @@
 
         public Company Company { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NewBukkenFile> Files { get; set; }
 
         [Display(Name = "インポート回数")]
         public int ImportCount { get; set; }
 
-
         [Display(Name = "インポート日")]
+        [Column(TypeName = "datetime")] // 型を指定しないと datetime(6) になる
         public DateTime ImportedAt { get; set; }
 
+        [Column(TypeName = "datetime")] // 型を指定しないと datetime(6) になる
         public DateTime CreatedAt { get; set; }
 
-        public ICollection<Price> PriceChangesets { get; set; }
-    }
-
-    public partial class NewBukkenFile
-    {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Type { get; set; }
-
-        public virtual NewBukken NewBukken { get; set; }
-
-        public virtual File File { get; set; }
-    }
-
-    public partial class Price
-    {
-        [Key]
-        public int Id { get; set; }
-
-        public DateTime ChangedAt { get; set; }
-
-        public decimal Min { get; set; }
-
-        public decimal? Max { get; set; }
-
-        public string Text { get; set; }
+        public virtual ICollection<Price> PriceChangesets { get; set; }
     }
 }

@@ -22,9 +22,9 @@
     public class LoggingDataProvider : ISuumoDataProvider
     {
         private readonly ISuumoDataProvider _inner;
-        private readonly StreamWriter _logger;
+        private readonly ILogger<SuumoDataProvider> _logger;
 
-        public LoggingDataProvider(ISuumoDataProvider inner, StreamWriter logger = null)
+        public LoggingDataProvider(ISuumoDataProvider inner, ILogger<SuumoDataProvider> logger)
         {
             this._inner = inner;
             this._logger = logger;
@@ -48,12 +48,10 @@
             this._inner.GetAreaBukkenList(url, data);
             sw.Stop();
 
-            var msg = string.Format("{0} {1}", sw.ElapsedMilliseconds, url);
-            System.Diagnostics.Debug.WriteLine(msg);
-
-            if (_logger != null) {
-                _logger.WriteLine(msg);
-                _logger.Flush();
+            if (_logger != null)
+            {
+                var msg = string.Format("{0} {1}", sw.ElapsedMilliseconds, url);
+                _logger.LogInformation(msg);
             }
         }
 
@@ -64,12 +62,10 @@
             var ret = this._inner.GetBukkenDetail(url);
             sw.Stop();
 
-            var msg = string.Format("{0} {1}", sw.ElapsedMilliseconds, url);
-            System.Diagnostics.Debug.WriteLine(msg);
-
-            if (_logger != null) {
-                _logger.WriteLine(msg);
-                _logger.Flush();
+            if (_logger != null)
+            {
+                var msg = string.Format("{0} {1}", sw.ElapsedMilliseconds, url);
+                _logger.LogInformation(msg);
             }
 
             return ret;
@@ -82,12 +78,10 @@
             var ret = this._inner.GetFileData(url);
             sw.Stop();
 
-            var msg = string.Format("{0} {1}", sw.ElapsedMilliseconds, url);
-            System.Diagnostics.Debug.WriteLine(msg);
-
-            if (_logger != null) {
-                _logger.WriteLine(msg);
-                _logger.Flush();
+            if (_logger != null)
+            {
+                var msg = string.Format("{0} {1}", sw.ElapsedMilliseconds, url);
+                _logger.LogInformation(msg);
             }
 
             return ret;
@@ -114,7 +108,10 @@
 
         public SuumoDataProvider()
         {
-            this._client = new HttpClient();
+            var handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = true;
+
+            this._client = new HttpClient(handler);
 
             // ユーザーエージェント文字列をセット（オプション）
             this._client.DefaultRequestHeaders.Add(
@@ -460,8 +457,12 @@
 
                     var msg = ie.Message;
                     System.Diagnostics.Debug.WriteLine(msg);
+                    if (msg.Contains("Internal Server Error"))
+                    {
+                        break;
+                    }
 
-                    break;
+                    System.Threading.Thread.Sleep(1000 * 5);
                 }
                 catch (Exception e)
                 {
@@ -500,8 +501,12 @@
 
                     var msg = ie.Message;
                     System.Diagnostics.Debug.WriteLine(msg);
+                    if (msg.Contains("Internal Server Error"))
+                    {
+                        break;
+                    }
 
-                    break;
+                    System.Threading.Thread.Sleep(1000 * 10);
                 }
                 catch (Exception e)
                 {

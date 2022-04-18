@@ -4,10 +4,12 @@ namespace SuumoScraping.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.EntityFrameworkCore;
 
+    [Table("files")]
+    [Index(nameof(Url), Name = "IX_Files_Url")]
     public partial class File
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public File()
         {
             this.BukkenFiles = new HashSet<BukkenFile>();
@@ -43,14 +45,12 @@ namespace SuumoScraping.Models
         [Required]
         [MaxLength(64)]
         [Column(TypeName = "nchar")]
-        public string Hash { get; }
+        public string Hash { get; private set; }
 
         [Required]
         [MaxLength(500)]
-        [Index("IX_Files_Url", 1)]
         public string Url { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
         public virtual ICollection<BukkenFile> BukkenFiles { get; set; }
     }
 }
