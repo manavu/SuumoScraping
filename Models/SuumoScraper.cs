@@ -1,8 +1,9 @@
-﻿namespace SuumoScraping.Models
+namespace SuumoScraping.Models
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using SuumoScraping.Extensions;
     using Microsoft.Extensions.Logging;
 
@@ -21,31 +22,9 @@
             this._scrapingContextFactory = scrapingContextFactory;
         }
 
-        public void Execute()
+        public void Execute(CancellationToken ct = default)
         {
             var data = new List<(string, string)>();
-
-            // 新宿
-            // ParseRootPage("https://suumo.jp/ms/chuko/tokyo/sc_shinjuku/", detailPages);
-            // var bukken2 = this._provider.GetBukkenDetail("https://suumo.jp" + "/ms/chuko/tokyo/sc_setagaya/nc_94305250/");
-
-            // 都心部
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_01/", data);
-
-            // 23区東部
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_02/", data);
-
-            // 23区北部
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_03/", data);
-
-            // 23区西部
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_04/", data);
-
-            // 23区南部
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_05/", data);
-
-            // 都下
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/tokyo/sa_other_06/", data);
 
             // 戸田市
             this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/saitama/sc_toda/", data);
@@ -56,12 +35,15 @@
             // さいたま市南区（武蔵浦和）
             this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/saitama/sc_saitamashiminami/", data);
 
-            // 川崎市
-            // this._provider.GetAreaBukkenList("https://suumo.jp/ms/chuko/kanagawa/sa_kawasaki/", data);
-
             // 詳細ページを読み込む
             foreach (var datum in data)
             {
+                if (ct.IsCancellationRequested)
+                {
+                    Console.WriteLine("Scraping cancelled.");
+                    break;
+                }
+
                 using var db = this._scrapingContextFactory.Create();
 
                 if (db.Bukkens.Any(m => m.ImportedDate == _importedDate && m.DetailUrl == datum.Item2))

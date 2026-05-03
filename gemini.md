@@ -31,7 +31,18 @@
 ```bash
 dotnet run
 ```
-実行後、`https://localhost:5001` でアクセス可能。物件インポートは `/Bukken/Import` エンドポイント等を使用。
+実行後、`http://localhost:5000` でアクセス可能。
+
+### CLI コマンド (スクレイピング・同期)
+スクレイピングの実行:
+```bash
+dotnet run -- scrape
+```
+データの同期 (集計):
+```bash
+dotnet run -- sync
+```
+※ いずれも `Ctrl+C` で安全に中断可能です。
 
 ### データベース連携 (Entity Framework Core)
 ツールの復元:

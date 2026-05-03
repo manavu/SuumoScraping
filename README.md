@@ -20,10 +20,28 @@ $ dotnet user-secrets set "ConnectionStrings:ScrapingDb" "server=localhost;datab
 ```
 
 ## 実行するには
-```
+
+### Web サーバーの起動
+```bash
 $ dotnet run
-$ curl -k -L -m 0  https://localhost:5001/Bukken/Import
 ```
+ブラウザで `http://localhost:5000` にアクセスしてください。
+
+### コマンドラインからの実行
+
+スクレイピングやデータの同期をコマンドラインから直接実行できます。
+
+**スクレイピングの実行:**
+```bash
+$ dotnet run -- scrape
+```
+
+**データの同期（スクレイピング済みデータの集計）:**
+```bash
+$ dotnet run -- sync
+```
+
+※ 実行中に `Ctrl+C` を押すことで、安全に中断できます。
 
 ## モデルに変更を加えたら
 

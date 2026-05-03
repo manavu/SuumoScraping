@@ -1,4 +1,4 @@
-﻿namespace SuumoScraping.Controllers
+namespace SuumoScraping.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -21,244 +21,13 @@
 
         private readonly ILogger<SuumoDataProvider> _logger;
 
-        public BukkenController(IScrapingContextFactory scrapingContextFactory, ILogger<SuumoDataProvider> logger)
+        private readonly BukkenService _bukkenService;
+
+        public BukkenController(IScrapingContextFactory scrapingContextFactory, ILogger<SuumoDataProvider> logger, BukkenService bukkenService)
         {
             _scrapingContextFactory = scrapingContextFactory;
             _logger = logger;
-        }
-
-        public ActionResult Test()
-        {
-            using (var db = _scrapingContextFactory.Create())
-            {
-                // db.Database.CommandTimeout = 0;
-
-                var urls = from bukken in db.Bukkens
-                           group bukken.DetailUrl by bukken.DetailUrl into g
-                           select g.Key;
-
-                /*
-                Parallel.ForEach(urls.ToList(), (url) =>
-                {
-                    System.Diagnostics.Debug.WriteLine(url);
-                    AddNewBukken(url);
-                });*/
-
-                foreach (var url in urls.ToList())
-                {
-                    System.Diagnostics.Debug.WriteLine(url);
-                    AddNewBukken(url);
-                }
-            }
-
-            return this.Content("aa");
-        }
-
-        private void AddNewBukken(string url)
-        {
-            using (var db = _scrapingContextFactory.Create())
-            using (var tx = db.Database.BeginTransaction())
-            {
-                db.Database.SetCommandTimeout(0);
-
-                var bukkens = db.Bukkens
-                    .Include(m => m.Files)
-                    .ThenInclude(m => m.File)
-                    .Include(m => m.FullText)
-                    .Where(m => m.DetailUrl == url)
-                    .OrderBy(m => m.ImportedDate)
-                    .ToList();
-
-                var newBukken = db.NewBukkens
-                    .Include(m => m.PriceChangesets)
-                    .Include(m => m.Files)
-                    .ThenInclude(m => m.File)
-                    .SingleOrDefault(m => m.DetailUrl == url);
-
-                if (newBukken == null)
-                {
-                    newBukken = new NewBukken();
-                    newBukken.CreatedAt = bukkens.Min(m => m.ImportedDate);
-                    db.NewBukkens.Add(newBukken);
-                }
-
-                foreach (var bukken in bukkens)
-                {
-                    newBukken.DetailUrl = url;
-                    newBukken.Access1 = bukken.Access;
-                    newBukken.Access2 = bukken.Access2;
-                    newBukken.Access3 = bukken.Access3;
-                    newBukken.Address = bukken.Address;
-                    newBukken.Balcony = bukken.Balcony;
-
-                    if (!string.IsNullOrEmpty(bukken.BuiltYears))
-                    {
-                        var ret = DateTime.MinValue;
-
-                        if (DateTime.TryParse(bukken.BuiltYears + "1日", out ret))
-                        {
-                            newBukken.BuiltYears = ret;
-                        }
-                    }
-
-                    // この方法では警告がでる
-                    // newBukken.Company = bukken.Company;
-                    newBukken.Company.Name = bukken.Company.Name;
-                    newBukken.Company.Address = bukken.Company.Address;
-                    newBukken.Company.TakkenLicense = bukken.Company.TakkenLicense;
-                    newBukken.Company.TransactionAspect = bukken.Company.TransactionAspect;
-
-                    newBukken.Direction = bukken.Direction;
-                    newBukken.Floor = bukken.Floor;
-                    newBukken.FloorArea = bukken.FloorArea;
-                    newBukken.FloorArea1 = bukken.FloorArea1;
-                    newBukken.FloorAreaMeasuringMethod = bukken.FloorAreaMeasuringMethod;
-                    newBukken.FloorTubo = bukken.FloorTubo;
-
-                    newBukken.ImportedAt = bukken.ImportedDate;
-                    newBukken.Layout = bukken.Layout;
-                    newBukken.ManagementFee = bukken.ManagementFee;
-                    newBukken.MoveInTime = bukken.MoveInTime;
-
-                    newBukken.RepairingDeposit = bukken.RepairingDeposit;
-                    newBukken.RepairingFund = bukken.RepairingFund;
-                    newBukken.Restriction = bukken.Restriction;
-                    newBukken.RightsStyle = bukken.RightsStyle;
-                    newBukken.Structure = bukken.Structure;
-                    newBukken.Title = bukken.Title;
-                    newBukken.UseDistrict = bukken.UseDistrict;
-
-                    bukken.Price2 = bukken.Price2 != 0 ? bukken.Price2 : null;
-
-                    var currentPrice = newBukken.PriceChangesets
-                        .OrderByDescending(m => m.ChangedAt)
-                        .FirstOrDefault();
-
-                    if (currentPrice == null || currentPrice.Min != bukken.Price1 || currentPrice.Max != bukken.Price2)
-                    {
-                        var newPrice = new Price();
-                        newPrice.Min = bukken.Price1;
-                        newPrice.Max = bukken.Price2;
-                        newPrice.Text = bukken.Price;
-                        newPrice.ChangedAt = bukken.ImportedDate;
-
-                        newBukken.PriceChangesets.Add(newPrice);
-                    }
-
-                    foreach (var bukkenFile in bukken.Files)
-                    {
-                        if (newBukken.Files.Any(m => m.File.Url == bukkenFile.File.Url))
-                        {
-                            continue;
-                        }
-
-                        var newBukkenFile = new NewBukkenFile()
-                        {
-                            File = bukkenFile.File,
-                            Type = bukkenFile.Type,
-                        };
-
-                        newBukken.Files.Add(newBukkenFile);
-                    }
-
-                    newBukken.ImportCount++;
-
-                    while (bukken.Files.Any())
-                    {
-                        var bukkenFile = bukken.Files.First();
-                        // この方法ではNULLが入るだけなのでちゃんとエンティティも消す
-                        bukken.Files.Remove(bukkenFile);
-                        db.Set<BukkenFile>().Remove(bukkenFile);
-                    }
-
-                    if (bukken.FullText != null)
-                    {
-                        db.Set<BukkenFulltext>().Remove(bukken.FullText);
-                    }
-
-                    db.Bukkens.Remove(bukken);
-                }
-
-                try
-                {
-                    db.SaveChanges();
-                    tx.Commit();
-                }
-                catch (DbUpdateException e)
-                {
-                    var msg = e.Message;
-                    System.Diagnostics.Debug.WriteLine(msg);
-                }
-                /*
-                catch (System.Data.Entity.Validation.DbEntityValidationException e)
-                {
-                    // EF Core にはモデル検証がないっぽい。SaveChanges をオーバーライドして自前で実装する
-                    // バリデーターは何を使うべきか？
-                    var msg = e.Message;
-                    System.Diagnostics.Debug.WriteLine(msg);
-                }*/
-                catch (Exception e)
-                {
-                    var msg = e.Message;
-                    System.Diagnostics.Debug.WriteLine(msg);
-                }
-            }
-        }
-
-        /// <summary>
-        /// FullText のデータを生成する
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Test2()
-        {
-            using (var db = _scrapingContextFactory.Create())
-            {
-                // db.Database.CommandTimeout = 0;
-
-                var bukkenIds = db.Bukkens
-                    .Where(m => m.FullText == null)
-                    .Select(m => m.Id)
-                    .ToList();
-
-                System.Diagnostics.Debug.WriteLine("count" + bukkenIds.Count.ToString());
-
-                Parallel.ForEach(bukkenIds, (bukkenId) =>
-                {
-                    System.Diagnostics.Debug.WriteLine(bukkenId.ToString());
-
-                    using (var db2 = _scrapingContextFactory.Create())
-                    {
-                        var src = db2.Bukkens.Single(m => m.Id == bukkenId);
-
-                        var tmp = new System.Text.StringBuilder();
-
-                        if (!string.IsNullOrEmpty(src.Access))
-                        {
-                            tmp.Append(src.Access);
-                        }
-
-                        if (!string.IsNullOrEmpty(src.Access2))
-                        {
-                            tmp.AppendFormat("、{0}", src.Access2);
-                        }
-
-                        if (!string.IsNullOrEmpty(src.Access3))
-                        {
-                            tmp.AppendFormat("、{0}", src.Access3);
-                        }
-
-                        src.FullText = new BukkenFulltext();
-
-                        src.FullText.AccessBigram = string.Join(" ", tmp.ToString().ToNGram(2));
-
-                        src.FullText.AddressBigram = string.Join(" ", src.Address.ToNGram(2));
-
-                        db2.SaveChanges();
-                    }
-                });
-            }
-
-            return this.Content("aa");
+            _bukkenService = bukkenService;
         }
 
         [HttpGet]
@@ -284,20 +53,15 @@
                 return this.RedirectToAction("Filter");
             }
 
-            // grid-column=ImportedDate&grid-dir=0
             using (var db = _scrapingContextFactory.Create())
             {
-                // db.Database.CommandTimeout = 0;
-
                 var bukkens = db.NewBukkens.AsQueryable();
 
-                // タイトルでフィルタ
                 if (!string.IsNullOrEmpty(model.Title))
                 {
                     bukkens = bukkens.Where(m => m.Title.Contains(model.Title));
                 }
 
-                // 住所でフィルタ
                 if (!string.IsNullOrEmpty(model.Address))
                 {
                     var builder = PredicateBuilder.New<NewBukken>(true);
@@ -310,7 +74,6 @@
                     bukkens = bukkens.AsExpandable().Where(builder);
                 }
 
-                // 交通でフィルタ
                 if (!string.IsNullOrEmpty(model.Access))
                 {
                     var builder = PredicateBuilder.New<NewBukken>(true);
@@ -459,43 +222,5 @@
                 return View(model);
             }
         }
-
-        [HttpGet]
-        public ActionResult Import()
-        {
-            using (var provider = new LoggingDataProvider(new SuumoDataProvider(), _logger))
-            {
-                var service = new SuumoScraper(provider, _scrapingContextFactory);
-
-                service.Execute();
-            }
-
-            return RedirectToAction("Filter");
-        }
-
-        /*
-                [HttpGet]
-                public ActionResult Import2(ILogger<SuumoDataProvider> logger)
-                {
-                    // 非同期IOを許可する
-                    var syncIoFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpBodyControlFeature>();
-                    if (syncIoFeature != null)
-                    {
-                        syncIoFeature.AllowSynchronousIO = true;
-                    }
-
-                    Response.StatusCode = 200;
-                    Response.ContentType = "text/plain";
-
-                    using (var sw = new System.IO.StreamWriter(Response.Body))
-                    using (var provider = new LoggingDataProvider(new SuumoDataProvider(), sw))
-                    {
-                        var service = new SuumoScraper(provider, _scrapingContextFactory);
-
-                        service.Execute();
-                    }
-
-                    return new EmptyResult();
-                }*/
     }
 }
