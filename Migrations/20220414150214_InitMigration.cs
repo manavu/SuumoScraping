@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
@@ -11,14 +12,14 @@ namespace SuumoScraping.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8");
+                .Annotation("MySQL:CharSet", "utf8");
 
             migrationBuilder.CreateTable(
                 name: "bukkenfulltexts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     AccessBigram = table.Column<string>(type: "longtext", nullable: false),
                     AddressBigram = table.Column<string>(type: "longtext", nullable: false)
                 },
@@ -32,7 +33,7 @@ namespace SuumoScraping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     FileData = table.Column<byte[]>(type: "longblob", nullable: false),
                     ContentType = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Hash = table.Column<string>(type: "nchar(64)", maxLength: 64, nullable: false),
@@ -48,7 +49,7 @@ namespace SuumoScraping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     DetailUrl = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
                     Address = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
@@ -90,7 +91,7 @@ namespace SuumoScraping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     Price = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Price1 = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -139,7 +140,7 @@ namespace SuumoScraping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     File_Id = table.Column<int>(type: "int", nullable: true),
                     NewBukken_Id = table.Column<int>(type: "int", nullable: true)
@@ -164,7 +165,7 @@ namespace SuumoScraping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     ChangedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Min = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Max = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -186,7 +187,7 @@ namespace SuumoScraping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Bukken_Id = table.Column<int>(type: "int", nullable: true),
                     File_Id = table.Column<int>(type: "int", nullable: true)

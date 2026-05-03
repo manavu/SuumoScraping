@@ -37,8 +37,7 @@ namespace SuumoScraping.Models
 
             var optionsBuilder = new DbContextOptionsBuilder<ScrapingContext>();
 
-            var serverVersion = new MySqlServerVersion(new Version(5, 7, 11));
-            optionsBuilder.UseMySql(connectionString, serverVersion)
+            optionsBuilder.UseMySQL(connectionString)
                 // The following three options help with debugging, but should
                 // be changed or removed for production.
                 .LogTo(Console.WriteLine, LogLevel.Warning);

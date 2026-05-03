@@ -5,10 +5,10 @@
 開発環境は Docker (Dev Containers) を前提としており、データベースには MySQL を使用しています。
 
 ## 技術スタック
-- **フレームワーク:** .NET 6.0 (ASP.NET Core MVC)
-- **言語:** C#
-- **データベース:** MySQL 5.7.11
-- **ORM:** Entity Framework Core 6.0 (Pomelo.EntityFrameworkCore.MySql)
+- **フレームワーク:** .NET 10.0 (ASP.NET Core MVC)
+- **言語:** C# 14
+- **データベース:** MySQL 8.4 (LTS)
+- **ORM:** Entity Framework Core 10.0 (MySql.EntityFrameworkCore)
 - **スクレイピング:** HtmlAgilityPack
 - **開発環境:** Docker, VS Code Remote - Containers
 

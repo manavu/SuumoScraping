@@ -29,7 +29,6 @@
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasCharSet("utf8", DelegationModes.ApplyToDatabases);
         }
 
         public virtual DbSet<NewBukken> NewBukkens { get; set; }

@@ -16,10 +16,8 @@ namespace SuumoScraping.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            MySqlModelBuilderExtensions.HasCharSet(modelBuilder, "utf8", DelegationModes.ApplyToDatabases);
 
             modelBuilder.Entity("SuumoScraping.Models.Bukken", b =>
                 {
@@ -215,7 +213,7 @@ namespace SuumoScraping.Migrations
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("nchar(64)");
+                        .HasColumnType("nchar");
 
                     b.Property<string>("Url")
                         .IsRequired()

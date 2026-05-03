@@ -21,7 +21,7 @@ namespace SuumoScraping.Migrations
                 .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            MySqlModelBuilderExtensions.HasCharSet(modelBuilder, "utf8", DelegationModes.ApplyToDatabases);
+
 
             modelBuilder.Entity("SuumoScraping.Models.Bukken", b =>
                 {

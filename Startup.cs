@@ -12,7 +12,6 @@ namespace SuumoScraping
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Models;
-    using Pomelo.EntityFrameworkCore.MySql;
     using Microsoft.EntityFrameworkCore;
 
     public class Startup
@@ -28,17 +27,12 @@ namespace SuumoScraping
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
-            //var connectionString = "server=db;database=ScrapingDb2;port=3306;uid=root;password=root;characterset=utf8;";
-            services.AddScoped<IScrapingContextFactory, ScrapingContextFactory>();  // (_ => new ScrapingContextFactory(Configuration));
+            services.AddScoped<IScrapingContextFactory, ScrapingContextFactory>();
 
-            var serverVersion = new MySqlServerVersion(new Version(5, 7, 11));
-
-            // Replace 'YourDbContext' with the name of your own DbContext derived class.
+            // Use MySQL provider from Oracle
             services.AddDbContext<ScrapingContext>(
                 dbContextOptions => dbContextOptions
-                    .UseMySql(connectionString, serverVersion)
-                    // The following three options help with debugging, but should
-                    // be changed or removed for production.
+                    .UseMySQL(connectionString)
                     .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors());
@@ -49,10 +43,8 @@ namespace SuumoScraping
             // add session
             services.AddSession(options =>
             {
-                // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromMinutes(15);
                 options.Cookie.HttpOnly = true;
-                // Make the session cookie essential
                 options.Cookie.IsEssential = true;
                 options.Cookie.Name = "SessionCookie";
             });
@@ -71,7 +63,6 @@ namespace SuumoScraping
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
