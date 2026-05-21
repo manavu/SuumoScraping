@@ -7,6 +7,7 @@ namespace SuumoScraping.Infrastructure.Scraping
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Exceptions;
+    using SuumoScraping.Domain.Gateways;
 
     public class SuumoHtmlFetcher : ISuumoHtmlFetcher
     {

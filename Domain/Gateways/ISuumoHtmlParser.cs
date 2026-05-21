@@ -1,6 +1,5 @@
-namespace SuumoScraping.Infrastructure.Scraping
+namespace SuumoScraping.Domain.Gateways
 {
-    using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Domain.Models;
 
     public interface ISuumoHtmlParser

@@ -1,4 +1,4 @@
-namespace SuumoScraping.Infrastructure.Scraping
+namespace SuumoScraping.Domain.Gateways
 {
     using System;
     using System.Threading;
