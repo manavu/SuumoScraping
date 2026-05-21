@@ -13,6 +13,8 @@ namespace SuumoScraping
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Models;
     using Microsoft.EntityFrameworkCore;
+    using SuumoScraping.Domain.Gateways;
+    using SuumoScraping.Infrastructure.Scraping;
 
     public class Startup
     {
@@ -29,6 +31,9 @@ namespace SuumoScraping
             var connectionString = "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
             services.AddScoped<IScrapingContextFactory, ScrapingContextFactory>();
             services.AddScoped<ISuumoDataProvider, SuumoDataProvider>();
+            services.AddScoped<ISuumoHtmlFetcher, SuumoHtmlFetcher>();
+            services.AddScoped<ISuumoHtmlParser, SuumoHtmlParser>();
+            services.AddScoped<ISuumoGateway, SuumoGateway>();
             services.AddScoped<SuumoScraper>();
             services.AddScoped<BukkenService>();
 

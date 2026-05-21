@@ -22,4 +22,10 @@
 		<Folder Include="Views\File\" />
 		<Folder Include="wwwroot\lib\" />
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="SuumoScraping.Tests\**" />
+		<Content Remove="SuumoScraping.Tests\**" />
+		<EmbeddedResource Remove="SuumoScraping.Tests\**" />
+		<None Remove="SuumoScraping.Tests\**" />
+	</ItemGroup>
 </Project>
