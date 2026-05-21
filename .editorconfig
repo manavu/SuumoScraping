@@ -1,0 +1,92 @@
+root = true
+
+# 自動生成コードやマイグレーションコードを解析対象から除外
+[*{Migrations,obj,bin}*/*.cs]
+generated_code = true
+
+[*.cs]
+# インデント設定
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+charset = utf-8
+
+# StyleCop.Analyzers 警告の無効化・重要度調整
+
+# SA1633: ファイルヘッダーの欠落
+dotnet_diagnostic.SA1633.severity = none
+
+# SA1600: 要素（クラス、メソッド等）のドキュメント（XMLコメント）未記述
+dotnet_diagnostic.SA1600.severity = none
+
+# SA1601: 部分クラスのドキュメント未記述
+dotnet_diagnostic.SA1601.severity = none
+
+# SA1602: 列挙型のドキュメント未記述
+dotnet_diagnostic.SA1602.severity = none
+
+# SA1101: ローカルメンバー呼び出し時の 'this.' プレフィックスの強制 (省略を許容)
+dotnet_diagnostic.SA1101.severity = none
+
+# SA1200: usingディレクティブは名前空間の内部に配置する必要がある (名前空間外のusingを許容)
+dotnet_diagnostic.SA1200.severity = none
+
+# SA1402: 1つのファイルには1つのタイプ（クラス等）のみを含める必要がある
+dotnet_diagnostic.SA1402.severity = none
+
+# SA1005: 1行コメントはスペースで始める必要がある
+dotnet_diagnostic.SA1005.severity = none
+
+# SA1512: 1行コメントの直後に空行を入れてはならない
+dotnet_diagnostic.SA1512.severity = none
+
+# SA1515: 1行コメントの直前には空行を入れなければならない
+dotnet_diagnostic.SA1515.severity = none
+
+# SA1028: 行末に空白を含めてはならない (suggestionに設定)
+dotnet_diagnostic.SA1028.severity = suggestion
+
+# SA1509: 開始ブレースの直前に空行を入れてはならない
+dotnet_diagnostic.SA1509.severity = none
+
+# SA1513: 閉じブレースの直後には空行を入れなければならない
+dotnet_diagnostic.SA1513.severity = none
+
+# SA0001: XMLドキュメントコメント分析が無効化されている警告
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1413: マルチライン初期化子での末尾カンマの強制 (好みが分かれるため無効化)
+dotnet_diagnostic.SA1413.severity = none
+
+# SA1122: "" ではなく string.Empty を使用する (可読性のため "" を許容)
+dotnet_diagnostic.SA1122.severity = none
+
+# SA1518: ファイル末尾の空行制限 (軽微なため無効化)
+dotnet_diagnostic.SA1518.severity = none
+
+# SA1649: ファイル名は最初の型名と一致させる (同居クラスやインターフェースを許容)
+dotnet_diagnostic.SA1649.severity = none
+
+# SA1414: タプル型シグネチャでの要素名定義の強制 (型定義の柔軟性のために無効化)
+dotnet_diagnostic.SA1414.severity = none
+
+# SA1128: コンストラクタ初期化子を別行にする
+dotnet_diagnostic.SA1128.severity = none
+
+# SA1309: プライベートフィールドにアンダースコアを使用することを許容 (C#の事実上の標準)
+dotnet_diagnostic.SA1309.severity = none
+
+# SA1503: if/else 等での1行の波括弧 { } 省略を許容 (読みやすさ・簡潔さのため)
+dotnet_diagnostic.SA1503.severity = none
+
+# SA1201: プロパティやメソッド、構造体の順序制約を無効化 (開発の快適性を優先)
+dotnet_diagnostic.SA1201.severity = none
+
+# SA1202: メンバーアクセス制限子 (public/private等) の順序制約を無効化
+dotnet_diagnostic.SA1202.severity = none
+
+# SA1204: 静的メンバーの順序制約を無効化
+dotnet_diagnostic.SA1204.severity = none
+
+# SA1312: ローカル変数の命名規則 (アンダースコア等) に対する警告を無効化
+dotnet_diagnostic.SA1312.severity = none

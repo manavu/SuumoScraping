@@ -1,4 +1,4 @@
-﻿namespace SuumoScraping.Extensions
+namespace SuumoScraping.Extensions
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Text;
 
     /// <summary>
-    /// Stringクラス拡張メソッド
+    /// Stringクラス拡張メソッド.
     /// </summary>
     public static class StringExtension
     {
@@ -44,9 +44,9 @@
         }
 
         /// <summary>
-        /// 文字列を数値化
+        /// 文字列を数値化.
         /// </summary>
-        /// <param name="self">Stringインスタンス</param>
+        /// <param name="self">Stringインスタンス.</param>
         /// <returns></returns>
         public static decimal ToDigit(this string self)
         {
@@ -55,7 +55,7 @@
 
             foreach (var c in self)
             {
-                var result = (decimal)0;
+                var result = 0M;
                 if (decimal.TryParse(c.ToString(), out result))
                 {
                     stack.Append(c);

@@ -122,7 +122,7 @@ namespace SuumoScraping.Tests
             Assert.Equal(72.5m, result.FloorAreaSqm);
             Assert.Equal(21.9m, result.FloorTubo);
             Assert.Equal("壁芯", result.FloorAreaMeasuringMethod);
-            
+
             Assert.Equal("5500万円～6200万円", result.PriceRaw);
             Assert.Equal(55000000m, result.PriceMin);
             Assert.Equal(62000000m, result.PriceMax);

@@ -5,6 +5,7 @@ namespace SuumoScraping.Domain.Gateways
     public interface ISuumoHtmlParser
     {
         AreaPageResult ParseAreaPage(string url, string htmlString);
+
         ScrapedBukkenDetail ParseBukkenDetail(string url, string bukkengaiyoHtml, string bukkenTokuchoHtml);
     }
 }

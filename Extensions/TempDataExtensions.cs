@@ -1,8 +1,8 @@
 ﻿namespace SuumoScraping.Extensions
 {
     using System;
-    using Newtonsoft.Json;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
+    using Newtonsoft.Json;
 
     public static class TempDataDictionaryExtensions
     {

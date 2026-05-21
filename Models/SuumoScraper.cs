@@ -161,7 +161,7 @@ namespace SuumoScraping.Models
 
                     db.Bukkens.Add(bukken);
                     db.SaveChanges();
-                    
+
                     this._logger.LogInformation("物件データの取得・DB保存に成功しました: {Url} ({Title})", detailUrl, bukken.Title);
                 }
                 catch (SuumoFetchException e)

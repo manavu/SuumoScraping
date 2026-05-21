@@ -7,13 +7,13 @@ namespace SuumoScraping.Controllers
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.EntityFrameworkCore;
     using LinqKit;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using SuumoScraping.Extensions;
     using SuumoScraping.Models;
     using SuumoScraping.ViewModels;
-    using SuumoScraping.Extensions;
 
     public class BukkenController : Controller
     {

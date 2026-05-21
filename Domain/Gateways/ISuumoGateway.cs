@@ -7,8 +7,7 @@ namespace SuumoScraping.Domain.Gateways
 
     public record AreaPageResult(
         IReadOnlyList<ScrapedBukkenSummary> Bukkens,
-        string NextPageUrl
-    );
+        string NextPageUrl);
 
     public interface ISuumoGateway
     {

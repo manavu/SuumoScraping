@@ -1,9 +1,9 @@
 namespace SuumoScraping.Models
 {
     using System;
+    using Microsoft.EntityFrameworkCore;
     // using System.Data.Entity.Infrastructure;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
     public interface IScrapingContextFactory // : IDbContextFactory<ScrapingContext>

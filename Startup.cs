@@ -7,14 +7,14 @@ namespace SuumoScraping
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpsPolicy;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using SuumoScraping.Models;
-    using Microsoft.EntityFrameworkCore;
     using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Infrastructure.Scraping;
+    using SuumoScraping.Models;
 
     public class Startup
     {

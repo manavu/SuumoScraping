@@ -1,4 +1,4 @@
-﻿namespace SuumoScraping.Models
+namespace SuumoScraping.Models
 {
     using System;
     using Microsoft.EntityFrameworkCore;

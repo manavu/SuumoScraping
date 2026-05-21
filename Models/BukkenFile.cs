@@ -4,7 +4,7 @@ namespace SuumoScraping.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    
+
     [Table("bukkenfiles")]
     public partial class BukkenFile
     {

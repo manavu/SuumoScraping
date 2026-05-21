@@ -1,4 +1,4 @@
-﻿namespace SuumoScraping.Controllers
+namespace SuumoScraping.Controllers
 {
     using System;
     using System.Collections.Generic;

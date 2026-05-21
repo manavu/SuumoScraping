@@ -275,8 +275,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                 GetOrDefault(rawValues, "企業名"),
                 GetOrDefault(rawValues, "企業住所"),
                 GetOrDefault(rawValues, "宅建"),
-                GetOrDefault(rawValues, "取引態様")
-            );
+                GetOrDefault(rawValues, "取引態様"));
 
             var accesses = new List<string>();
             if (rawValues.ContainsKey("交通1")) accesses.Add(rawValues["交通1"]);
@@ -316,8 +315,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                 GetOrDefault(rawValues, "入居時期"),
                 GetOrDefault(rawValues, "その他制限事項"),
                 company,
-                images
-            );
+                images);
         }
 
         private static string GetOrDefault(Dictionary<string, string> dict, string key, string defaultValue = "")

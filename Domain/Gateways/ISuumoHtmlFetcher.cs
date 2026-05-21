@@ -7,6 +7,7 @@ namespace SuumoScraping.Domain.Gateways
     public interface ISuumoHtmlFetcher : IDisposable
     {
         Task<string> GetHtmlStringAsync(string url, CancellationToken cancellationToken = default);
+
         Task<byte[]> GetFileDataAsync(string url, CancellationToken cancellationToken = default);
     }
 }

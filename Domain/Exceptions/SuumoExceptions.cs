@@ -27,6 +27,7 @@ namespace SuumoScraping.Domain.Exceptions
     public class SuumoParseException : SuumoScrapingException
     {
         public string ElementName { get; }
+
         public string RawHtml { get; }
 
         public SuumoParseException(string message, string url, string elementName, string rawHtml = null, Exception innerException = null)

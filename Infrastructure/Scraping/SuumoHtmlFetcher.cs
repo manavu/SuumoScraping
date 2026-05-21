@@ -77,7 +77,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                 try
                 {
                     this._logger.LogInformation("バイナリデータ取得開始: {Url} (試行 {RetryCount}/{MaxRetry})", url, i + 1, maxRetry);
-                    
+
                     var response = await this._client.GetAsync(url, cancellationToken).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
 
