@@ -11,12 +11,6 @@ namespace SuumoScraping.Infrastructure.Scraping
     using SuumoScraping.Domain.Models;
     using SuumoScraping.Extensions;
 
-    public interface ISuumoHtmlParser
-    {
-        AreaPageResult ParseAreaPage(string url, string htmlString);
-        ScrapedBukkenDetail ParseBukkenDetail(string url, string bukkengaiyoHtml, string bukkenTokuchoHtml);
-    }
-
     public class SuumoHtmlParser : ISuumoHtmlParser
     {
         private readonly ILogger<SuumoHtmlParser> _logger;

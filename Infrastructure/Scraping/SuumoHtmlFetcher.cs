@@ -8,12 +8,6 @@ namespace SuumoScraping.Infrastructure.Scraping
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Exceptions;
 
-    public interface ISuumoHtmlFetcher : IDisposable
-    {
-        Task<string> GetHtmlStringAsync(string url, CancellationToken cancellationToken = default);
-        Task<byte[]> GetFileDataAsync(string url, CancellationToken cancellationToken = default);
-    }
-
     public class SuumoHtmlFetcher : ISuumoHtmlFetcher
     {
         private readonly HttpClient _client;
