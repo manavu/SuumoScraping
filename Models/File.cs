@@ -15,7 +15,8 @@ namespace SuumoScraping.Models
             this.BukkenFiles = new HashSet<BukkenFile>();
         }
 
-        public File(byte[] data, string contentType, string url) : this()
+        public File(byte[] data, string contentType, string url)
+            : this()
         {
             var hashString = string.Empty;
 

@@ -71,7 +71,7 @@ dotnet_diagnostic.SA1649.severity = none
 dotnet_diagnostic.SA1414.severity = none
 
 # SA1128: コンストラクタ初期化子を別行にする
-dotnet_diagnostic.SA1128.severity = none
+dotnet_diagnostic.SA1128.severity = warning
 
 # SA1309: プライベートフィールドにアンダースコアを使用することを許容 (C#の事実上の標準)
 dotnet_diagnostic.SA1309.severity = none
