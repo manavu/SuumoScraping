@@ -15,7 +15,7 @@ namespace SuumoScraping
 
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             if (args.Length > 0)
             {
@@ -34,7 +34,7 @@ namespace SuumoScraping
                     {
                         var scraper = scope.ServiceProvider.GetRequiredService<SuumoScraper>();
                         Console.WriteLine("Starting scrape (Press Ctrl+C to stop)...");
-                        scraper.Execute(cts.Token);
+                        await scraper.ExecuteAsync(cts.Token);
                         Console.WriteLine("Scrape finished.");
                         return;
                     }
@@ -49,7 +49,7 @@ namespace SuumoScraping
                 }
             }
 
-            CreateHostBuilder(args).Build().Run();
+            await CreateHostBuilder(args).Build().RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

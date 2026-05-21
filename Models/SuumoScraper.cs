@@ -4,6 +4,9 @@ namespace SuumoScraping.Models
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
+    using SuumoScraping.Domain.Exceptions;
     using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Domain.Models;
 
@@ -12,15 +15,17 @@ namespace SuumoScraping.Models
         private readonly DateTime _importedDate;
         private readonly ISuumoGateway _gateway;
         private readonly IScrapingContextFactory _scrapingContextFactory;
+        private readonly ILogger<SuumoScraper> _logger;
 
-        public SuumoScraper(ISuumoGateway gateway, IScrapingContextFactory scrapingContextFactory)
+        public SuumoScraper(ISuumoGateway gateway, IScrapingContextFactory scrapingContextFactory, ILogger<SuumoScraper> logger)
         {
             this._importedDate = DateTime.Now.Date;
             this._gateway = gateway ?? throw new ArgumentNullException(nameof(gateway));
             this._scrapingContextFactory = scrapingContextFactory ?? throw new ArgumentNullException(nameof(scrapingContextFactory));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void Execute(CancellationToken ct = default)
+        public async Task ExecuteAsync(CancellationToken ct = default)
         {
             var detailUrls = new List<string>();
             var targetAreas = new[]
@@ -37,39 +42,45 @@ namespace SuumoScraping.Models
                 {
                     if (ct.IsCancellationRequested)
                     {
-                        Console.WriteLine("Scraping cancelled.");
+                        this._logger.LogInformation("スクレイピング処理がキャンセルされました（エリア巡回中）。");
                         break;
                     }
 
                     try
                     {
-                        var result = this._gateway.GetAreaPage(currentUrl);
+                        var result = await this._gateway.GetAreaPageAsync(currentUrl, ct).ConfigureAwait(false);
                         foreach (var bukkenSummary in result.Bukkens)
                         {
                             detailUrls.Add(bukkenSummary.DetailUrl);
                         }
                         currentUrl = result.NextPageUrl;
                     }
+                    catch (SuumoScrapingException e)
+                    {
+                        this._logger.LogError(e, "エリア一覧の取得中にスクレイピング例外が発生しました。エリア: {AreaUrl}", currentUrl);
+                        break;
+                    }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Debug.WriteLine($"エリア取得エラー: {currentUrl} msg: {e.Message}");
+                        this._logger.LogError(e, "エリア一覧の取得中に予期せぬ例外が発生しました。エリア: {AreaUrl}", currentUrl);
                         break;
                     }
 
                     // クローラーマナーとしての適切なウェイト設定
-                    Thread.Sleep(1000);
+                    await Task.Delay(1000, ct).ConfigureAwait(false);
                 }
             }
 
             // 重複排除
             detailUrls = detailUrls.Distinct().ToList();
+            this._logger.LogInformation("巡回対象のユニーク物件詳細URL数: {Count}件", detailUrls.Count);
 
             // 詳細ページを読み込む
             foreach (var detailUrl in detailUrls)
             {
                 if (ct.IsCancellationRequested)
                 {
-                    Console.WriteLine("Scraping cancelled.");
+                    this._logger.LogInformation("スクレイピング処理がキャンセルされました（詳細取得中）。");
                     break;
                 }
 
@@ -77,12 +88,14 @@ namespace SuumoScraping.Models
 
                 if (db.Bukkens.Any(m => m.ImportedDate == _importedDate && m.DetailUrl == detailUrl))
                 {
+                    this._logger.LogInformation("本日すでに取得済みの物件のためスキップします: {Url}", detailUrl);
                     continue;
                 }
 
                 try
                 {
-                    var src = this._gateway.GetBukkenDetail("https://suumo.jp" + detailUrl);
+                    var fullDetailUrl = "https://suumo.jp" + detailUrl;
+                    var src = await this._gateway.GetBukkenDetailAsync(fullDetailUrl, ct).ConfigureAwait(false);
 
                     var company = new Company();
                     company.Name = src.Company.Name;
@@ -130,9 +143,10 @@ namespace SuumoScraping.Models
                         var file = db.Files.FirstOrDefault(m => m.Url == imageUrl);
                         if (file == null)
                         {
-                            var fileData = this._gateway.GetFileData(imageUrl);
-                            if (fileData == null)
+                            var fileData = await this._gateway.GetFileDataAsync(imageUrl, ct).ConfigureAwait(false);
+                            if (fileData == null || fileData.Length == 0)
                             {
+                                this._logger.LogWarning("画像のダウンロードに失敗したかデータが空のため、画像の紐付けをスキップします: {Url}", imageUrl);
                                 continue;
                             }
 
@@ -147,13 +161,28 @@ namespace SuumoScraping.Models
 
                     db.Bukkens.Add(bukken);
                     db.SaveChanges();
+                    
+                    this._logger.LogInformation("物件データの取得・DB保存に成功しました: {Url} ({Title})", detailUrl, bukken.Title);
+                }
+                catch (SuumoFetchException e)
+                {
+                    this._logger.LogError(e, "物件詳細のフェッチ（通信）中にエラーが発生しました。スキップして後続の処理を行います。URL: {Url}, HTTPステータス: {Status}", detailUrl, e.HttpStatusCode);
+                }
+                catch (SuumoParseException e)
+                {
+                    this._logger.LogError(e, "物件詳細の解析（パース）中にエラーが発生しました。スキップして後続の処理を行います。URL: {Url}, 失敗箇所: {Element}", detailUrl, e.ElementName);
+                }
+                catch (SuumoScrapingException e)
+                {
+                    this._logger.LogError(e, "物件詳細の取得中にスクレイピング例外が発生しました。スキップして後続の処理を行います。URL: {Url}", detailUrl);
                 }
                 catch (Exception e)
                 {
-                    var msg = e.Message;
-                    System.Diagnostics.Debug.WriteLine($"物件詳細の取得・保存エラー ({detailUrl}): {msg}");
-                    continue;
+                    this._logger.LogError(e, "物件詳細の取得・保存中に予期せぬ例外が発生しました。スキップして後続の処理を行います。URL: {Url}", detailUrl);
                 }
+
+                // 詳細巡回ごとの適切なウェイト
+                await Task.Delay(1000, ct).ConfigureAwait(false);
             }
         }
     }

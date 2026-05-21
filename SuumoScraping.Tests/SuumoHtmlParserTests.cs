@@ -1,6 +1,8 @@
 namespace SuumoScraping.Tests
 {
     using System.Linq;
+    using Microsoft.Extensions.Logging.Abstractions;
+    using SuumoScraping.Domain.Exceptions;
     using SuumoScraping.Infrastructure.Scraping;
     using Xunit;
 
@@ -10,6 +12,7 @@ namespace SuumoScraping.Tests
         public void ParseAreaPage_WithValidHtml_ReturnsBukkensAndNextPage()
         {
             // Arrange
+            var url = "https://suumo.jp/ms/chuko/saitama/sc_toda/";
             var html = """
                 <div class="property_unit-content">
                     <div>
@@ -26,10 +29,10 @@ namespace SuumoScraping.Tests
                 </p>
                 """;
 
-            var parser = new SuumoHtmlParser();
+            var parser = new SuumoHtmlParser(NullLogger<SuumoHtmlParser>.Instance);
 
             // Act
-            var result = parser.ParseAreaPage(html);
+            var result = parser.ParseAreaPage(url, html);
 
             // Assert
             Assert.NotNull(result);
@@ -45,6 +48,7 @@ namespace SuumoScraping.Tests
         public void ParseBukkenDetail_WithValidHtml_ReturnsParsedDetails()
         {
             // Arrange
+            var url = "https://suumo.jp/ms/chuko/saitama/sc_toda/nc_12345/";
             var gaiyoHtml = """
                 <table summary="表" class="tbl_gaiyo">
                     <tbody>
@@ -104,10 +108,10 @@ namespace SuumoScraping.Tests
                 </div>
                 """;
 
-            var parser = new SuumoHtmlParser();
+            var parser = new SuumoHtmlParser(NullLogger<SuumoHtmlParser>.Instance);
 
             // Act
-            var result = parser.ParseBukkenDetail(gaiyoHtml, tokuchoHtml);
+            var result = parser.ParseBukkenDetail(url, gaiyoHtml, tokuchoHtml);
 
             // Assert
             Assert.NotNull(result);
@@ -135,6 +139,23 @@ namespace SuumoScraping.Tests
             Assert.Single(result.Images);
             Assert.Equal("https://img.suumo.jp/xyz.jpg?w=452&h=339&x=1", result.Images[0].Url);
             Assert.Equal("外観", result.Images[0].Alt);
+        }
+
+        [Fact]
+        public void ParseBukkenDetail_WithInvalidHtml_ThrowsSuumoParseException()
+        {
+            // Arrange
+            var url = "https://suumo.jp/ms/chuko/saitama/sc_toda/nc_invalid/";
+            var invalidGaiyoHtml = "<html><body><div>物件概要テーブルがありません。</div></body></html>";
+            var tokuchoHtml = "";
+
+            var parser = new SuumoHtmlParser(NullLogger<SuumoHtmlParser>.Instance);
+
+            // Act & Assert
+            var exception = Assert.Throws<SuumoParseException>(() => parser.ParseBukkenDetail(url, invalidGaiyoHtml, tokuchoHtml));
+            Assert.Equal(url, exception.Url);
+            Assert.Equal("bukkengaiyo_table", exception.ElementName);
+            Assert.Contains("物件概要テーブルのノード取得に失敗しました", exception.Message);
         }
     }
 }
