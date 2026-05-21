@@ -140,9 +140,9 @@ namespace SuumoScraping.Models
 
             var doc = new HtmlDocument();
 
-            doc.OptionAutoCloseOnEnd = false;  //最後に自動で閉じる（？）
-            doc.OptionCheckSyntax = false;     //文法チェック。
-            doc.OptionFixNestedTags = true;    //閉じタグが欠如している場合の処理
+            doc.OptionAutoCloseOnEnd = false;  // 最後に自動で閉じる（？）
+            doc.OptionCheckSyntax = false;     // 文法チェック。
+            doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
 
             doc.LoadHtml(htmlString);
 
@@ -202,15 +202,15 @@ namespace SuumoScraping.Models
 
                 var doc = new HtmlDocument();
 
-                doc.OptionAutoCloseOnEnd = false;  //最後に自動で閉じる（？）
-                doc.OptionCheckSyntax = false;     //文法チェック。
-                doc.OptionFixNestedTags = true;    //閉じタグが欠如している場合の処理
+                doc.OptionAutoCloseOnEnd = false;  // 最後に自動で閉じる（？）
+                doc.OptionCheckSyntax = false;     // 文法チェック。
+                doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
 
                 doc.LoadHtml(data);
 
-                //var trNodes1 = doc.DocumentNode.SelectNodes("//table[1]/tbody[1]/tr");
+                // var trNodes1 = doc.DocumentNode.SelectNodes("//table[1]/tbody[1]/tr");
                 var trNodes1 = doc.DocumentNode.SelectNodes("//table[@summary='表' and position()=1]/tbody[1]/tr");
-                //var trNodes1 = doc.DocumentNode.SelectNodes("//table[@summary='表']/tbody[1]/tr");
+                // var trNodes1 = doc.DocumentNode.SelectNodes("//table[@summary='表']/tbody[1]/tr");
 
                 if (trNodes1 == null)
                 {
@@ -372,9 +372,9 @@ namespace SuumoScraping.Models
 
                 var doc = new HtmlDocument();
 
-                doc.OptionAutoCloseOnEnd = false;  //最後に自動で閉じる（？）
-                doc.OptionCheckSyntax = false;     //文法チェック。
-                doc.OptionFixNestedTags = true;    //閉じタグが欠如している場合の処理
+                doc.OptionAutoCloseOnEnd = false;  // 最後に自動で閉じる（？）
+                doc.OptionCheckSyntax = false;     // 文法チェック。
+                doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
 
                 doc.LoadHtml(data);
 

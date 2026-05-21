@@ -35,7 +35,7 @@ dotnet_diagnostic.SA1200.severity = none
 dotnet_diagnostic.SA1402.severity = none
 
 # SA1005: 1行コメントはスペースで始める必要がある
-dotnet_diagnostic.SA1005.severity = none
+dotnet_diagnostic.SA1005.severity = warning
 
 # SA1512: 1行コメントの直後に空行を入れてはならない
 dotnet_diagnostic.SA1512.severity = none

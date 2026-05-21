@@ -27,7 +27,7 @@ namespace SuumoScraping.Models
         public ScrapingContext Create()
         {
             var connectionString = "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
-            //var connectionString = "server=db;database=ScrapingDb2;port=3306;uid=root;password=root;characterset=utf8;";
+            // var connectionString = "server=db;database=ScrapingDb2;port=3306;uid=root;password=root;characterset=utf8;";
 
             /*
             if (_configuration != null)
