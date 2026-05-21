@@ -5,19 +5,28 @@ namespace SuumoScraping.Infrastructure.Scraping
     using System.Linq;
     using System.Text.RegularExpressions;
     using HtmlAgilityPack;
+    using Microsoft.Extensions.Logging;
+    using SuumoScraping.Domain.Exceptions;
     using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Domain.Models;
     using SuumoScraping.Extensions;
 
     public interface ISuumoHtmlParser
     {
-        AreaPageResult ParseAreaPage(string htmlString);
-        ScrapedBukkenDetail ParseBukkenDetail(string bukkengaiyoHtml, string bukkenTokuchoHtml);
+        AreaPageResult ParseAreaPage(string url, string htmlString);
+        ScrapedBukkenDetail ParseBukkenDetail(string url, string bukkengaiyoHtml, string bukkenTokuchoHtml);
     }
 
     public class SuumoHtmlParser : ISuumoHtmlParser
     {
-        public AreaPageResult ParseAreaPage(string htmlString)
+        private readonly ILogger<SuumoHtmlParser> _logger;
+
+        public SuumoHtmlParser(ILogger<SuumoHtmlParser> logger)
+        {
+            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public AreaPageResult ParseAreaPage(string url, string htmlString)
         {
             if (string.IsNullOrEmpty(htmlString))
             {
@@ -77,11 +86,11 @@ namespace SuumoScraping.Infrastructure.Scraping
             return new AreaPageResult(bukkens, nextPageUrl);
         }
 
-        public ScrapedBukkenDetail ParseBukkenDetail(string bukkengaiyoHtml, string bukkenTokuchoHtml)
+        public ScrapedBukkenDetail ParseBukkenDetail(string url, string bukkengaiyoHtml, string bukkenTokuchoHtml)
         {
             if (string.IsNullOrEmpty(bukkengaiyoHtml))
             {
-                throw new ArgumentException("物件概要のHTMLが空です。");
+                throw new ArgumentException("物件概要のHTMLが空です。", nameof(bukkengaiyoHtml));
             }
 
             var rawValues = new Dictionary<string, string>();
@@ -96,7 +105,7 @@ namespace SuumoScraping.Infrastructure.Scraping
             var trNodes = docGaiyo.DocumentNode.SelectNodes("//table[@summary='表' and position()=1]/tbody[1]/tr");
             if (trNodes == null)
             {
-                throw new Exception("物件概要テーブルのノード取得に失敗しました。");
+                throw new SuumoParseException("物件概要テーブルのノード取得に失敗しました。HTML構造が変更された可能性があります。", url, "bukkengaiyo_table", bukkengaiyoHtml);
             }
 
             var nodePacks = new List<Tuple<HtmlNode, HtmlNode>>();
@@ -140,7 +149,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Debug.WriteLine("企業分解エラー: " + e.Message);
+                        this._logger.LogWarning(e, "会社概要のパース中にエラーが発生しました: {Url}. メッセージ: {Message}", url, e.Message);
                     }
                     continue;
                 }
@@ -170,7 +179,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                             }
                             catch (Exception e)
                             {
-                                System.Diagnostics.Debug.WriteLine("価格分解エラー: " + e.Message);
+                                this._logger.LogWarning(e, "価格のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}", url, priceVal, e.Message);
                             }
                         }
                         break;
@@ -184,14 +193,15 @@ namespace SuumoScraping.Infrastructure.Scraping
                             var m2 = Regex.Match(areaVal, @"[0-9\.]*坪");
                             var m3 = Regex.Match(areaVal, @"壁芯|登記");
 
+                            if (m1.Success) rawValues["専任面積(㎡)"] = m1.Value.Replace("m", ""); // 後方互換のため
                             if (m1.Success) rawValues["専有面積(㎡)"] = m1.Value.Replace("m", "");
-                            if (m2.Success) rawValues["専任面積(坪)"] = m2.Value.Replace("坪", ""); // 念のため「専任」も「専有」も両方カバー
+                            if (m2.Success) rawValues["専任面積(坪)"] = m2.Value.Replace("坪", "");
                             if (m2.Success) rawValues["専有面積(坪)"] = m2.Value.Replace("坪", "");
                             if (m3.Success) rawValues["専有面積(計測方法)"] = m3.Value;
                         }
                         catch (Exception e)
                         {
-                            System.Diagnostics.Debug.WriteLine("面積分解エラー: " + e.Message);
+                            this._logger.LogWarning(e, "専有面積のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}", url, areaVal, e.Message);
                         }
                         break;
 
