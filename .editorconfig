@@ -47,7 +47,7 @@ dotnet_diagnostic.SA1515.severity = none
 dotnet_diagnostic.SA1028.severity = suggestion
 
 # SA1509: 開始ブレースの直前に空行を入れてはならない
-dotnet_diagnostic.SA1509.severity = none
+dotnet_diagnostic.SA1509.severity = warning
 
 # SA1513: 閉じブレースの直後には空行を入れなければならない
 dotnet_diagnostic.SA1513.severity = none

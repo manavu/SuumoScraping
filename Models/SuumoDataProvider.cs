@@ -145,7 +145,6 @@ namespace SuumoScraping.Models
             doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
 
             doc.LoadHtml(htmlString);
-
             {
                 // 物件情報の塊のルート
                 var nodes = doc.DocumentNode.SelectNodes("//div[@class='property_unit-content']");
@@ -190,7 +189,6 @@ namespace SuumoScraping.Models
         public IDictionary<string, string> GetBukkenDetail(string url)
         {
             var bukken = new Dictionary<string, string>();
-
             {
                 // 物件概要ページ
                 var data = this.GetHtmlString(url + "bukkengaiyo/?fmlg=t001");
