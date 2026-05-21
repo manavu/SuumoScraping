@@ -207,7 +207,7 @@ namespace SuumoScraping.Controllers
                         Files = m.Files.Select(n => new FileInfo
                         {
                             Id = n.File.Id,
-                            Title = n.Type
+                            Title = n.Type,
                         }),
                         Prices = m.PriceChangesets
                             .Select(n => new PriceInfo()

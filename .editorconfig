@@ -55,8 +55,8 @@ dotnet_diagnostic.SA1513.severity = none
 # SA0001: XMLドキュメントコメント分析が無効化されている警告
 dotnet_diagnostic.SA0001.severity = none
 
-# SA1413: マルチライン初期化子での末尾カンマの強制 (好みが分かれるため無効化)
-dotnet_diagnostic.SA1413.severity = none
+# SA1413: マルチライン初期化子での末尾カンマの強制
+dotnet_diagnostic.SA1413.severity = warning
 
 # SA1122: "" ではなく string.Empty を使用する (可読性のため "" を許容)
 dotnet_diagnostic.SA1122.severity = warning

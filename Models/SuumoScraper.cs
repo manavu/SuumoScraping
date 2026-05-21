@@ -32,7 +32,7 @@ namespace SuumoScraping.Models
             {
                 "https://suumo.jp/ms/chuko/saitama/sc_toda/",
                 "https://suumo.jp/ms/chuko/saitama/sc_saitamashiurawa/",
-                "https://suumo.jp/ms/chuko/saitama/sc_saitamashiminami/"
+                "https://suumo.jp/ms/chuko/saitama/sc_saitamashiminami/",
             };
 
             foreach (var areaUrl in targetAreas)
