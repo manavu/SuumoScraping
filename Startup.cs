@@ -15,6 +15,7 @@ namespace SuumoScraping
     using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Infrastructure.Scraping;
     using SuumoScraping.Models;
+    using SuumoScraping.UseCases;
 
     public class Startup
     {
@@ -37,6 +38,12 @@ namespace SuumoScraping
             services.AddScoped<ISuumoGateway, SuumoGateway>();
             services.AddScoped<SuumoScraper>();
             services.AddScoped<BukkenService>();
+
+            // ユースケースの登録
+            services.AddScoped<GetFilteredBukkensUseCase>();
+            services.AddScoped<GetBukkenDetailsUseCase>();
+            services.AddScoped<GetFileDataUseCase>();
+            services.AddScoped<GetFloorPlansUseCase>();
 
             // Use MySQL provider from Oracle
             services.AddDbContext<ScrapingContext>(dbContextOptions =>

@@ -3,52 +3,49 @@ namespace SuumoScraping.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Models;
+    using SuumoScraping.UseCases;
     using SuumoScraping.ViewModels;
 
     public class FileController : Controller
     {
-        private readonly IScrapingContextFactory _scrapingContextFactory;
+        private readonly GetFileDataUseCase _getFileDataUseCase;
 
-        public FileController(IScrapingContextFactory scrapingContextFactory)
+        private readonly GetFloorPlansUseCase _getFloorPlansUseCase;
+
+        public FileController(
+            GetFileDataUseCase getFileDataUseCase,
+            GetFloorPlansUseCase getFloorPlansUseCase
+        )
         {
-            _scrapingContextFactory = scrapingContextFactory;
+            _getFileDataUseCase = getFileDataUseCase;
+            _getFloorPlansUseCase = getFloorPlansUseCase;
         }
 
         // GET: File
         [ResponseCache(Duration = 10000)]
         [HttpGet]
-        public ActionResult Data(int id)
+        public async Task<ActionResult> Data(int id, CancellationToken cancellationToken = default)
         {
-            using (var db = _scrapingContextFactory.Create())
+            var result = await _getFileDataUseCase.ExecuteAsync(id, cancellationToken);
+            if (result == null)
             {
-                var file = db.Files.SingleOrDefault(m => m.Id == id);
-
-                return this.File(file.FileData, file.ContentType);
+                return this.NotFound();
             }
+
+            return this.File(result.Value.FileData, result.Value.ContentType);
         }
 
         [HttpGet]
-        public ActionResult List()
+        public async Task<ActionResult> List(CancellationToken cancellationToken = default)
         {
-            using (var db = _scrapingContextFactory.Create())
-            {
-                var model = db
-                    .NewBukkens.SelectMany(m => m.Files)
-                    .Where(m => m.Type == "間取り図")
-                    .Select(m => new FloorPlanInfo()
-                    {
-                        FileId = m.File.Id,
-                        BukkenId = m.NewBukken.Id,
-                        FloorArea = m.NewBukken.FloorArea,
-                    })
-                    .Take(1000)
-                    .ToList();
+            var model = await _getFloorPlansUseCase.ExecuteAsync(cancellationToken);
 
-                return View(model);
-            }
+            return this.View(model);
         }
     }
 }
