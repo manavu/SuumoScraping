@@ -50,7 +50,7 @@ dotnet_diagnostic.SA1028.severity = suggestion
 dotnet_diagnostic.SA1509.severity = warning
 
 # SA1513: 閉じブレースの直後には空行を入れなければならない
-dotnet_diagnostic.SA1513.severity = none
+dotnet_diagnostic.SA1513.severity = warning
 
 # SA0001: XMLドキュメントコメント分析が無効化されている警告
 dotnet_diagnostic.SA0001.severity = none

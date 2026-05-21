@@ -53,6 +53,7 @@ namespace SuumoScraping.Models
                         {
                             detailUrls.Add(bukkenSummary.DetailUrl);
                         }
+
                         currentUrl = result.NextPageUrl;
                     }
                     catch (SuumoScrapingException e)

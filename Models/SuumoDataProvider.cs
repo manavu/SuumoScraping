@@ -286,6 +286,7 @@ namespace SuumoScraping.Models
                                 {
                                     bukken.Add("価格最小", prices[0]);
                                 }
+
                                 if (prices.Length >= 2)
                                 {
                                     bukken.Add("価格最大", prices[1]);
@@ -349,6 +350,7 @@ namespace SuumoScraping.Models
                                     bukken.Add("交通3", tmp[2]);
                                 }
                             }
+
                             break;
                         default:
                             bukken.Add(item, values.First());

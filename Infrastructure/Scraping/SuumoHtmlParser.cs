@@ -145,6 +145,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                     {
                         this._logger.LogWarning(e, "会社概要のパース中にエラーが発生しました: {Url}. メッセージ: {Message}", url, e.Message);
                     }
+
                     continue;
                 }
 
@@ -176,6 +177,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                                 this._logger.LogWarning(e, "価格のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}", url, priceVal, e.Message);
                             }
                         }
+
                         break;
 
                     case "専有面積":
@@ -197,6 +199,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                         {
                             this._logger.LogWarning(e, "専有面積のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}", url, areaVal, e.Message);
                         }
+
                         break;
 
                     case "交通":
