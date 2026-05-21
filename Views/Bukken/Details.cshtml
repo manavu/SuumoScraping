@@ -1,4 +1,4 @@
-﻿@model SuumoScraping.ViewModels.BukkenInfo
+@model SuumoScraping.ViewModels.BukkenInfo
 
 @{
     ViewBag.Title = "Details";
@@ -194,13 +194,4 @@
 <p>
     @Html.ReferrerLink("Back to List")
 </p>
-
-@section scripts
-{
-<script type="text/javascript">
-    $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
-        event.preventDefault();
-        $(this).ekkoLightbox();
-    });
-</script>
-}
+

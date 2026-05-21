@@ -3,24 +3,24 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@4.4.1",
+      "library": "bootstrap@5.3.3",
       "destination": "wwwroot/lib/bootstrap/",
-      "provider": "unpkg"
+      "provider": "cdnjs"
     },
     {
-      "library": "jquery@3.5.0",
+      "library": "jquery@3.7.1",
       "destination": "wwwroot/lib/jquery/"
     },
     {
-      "library": "jquery-validate@1.19.1",
+      "library": "jquery-validate@1.20.1",
       "destination": "wwwroot/lib/jquery-validate/"
     },
     {
-      "library": "jquery-validation-unobtrusive@3.2.11",
+      "library": "jquery-validation-unobtrusive@4.0.0",
       "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
     },
     {
-      "library": "lightbox2@2.11.1",
+      "library": "lightbox2@2.11.5",
       "destination": "wwwroot/lib/lightbox2/"
     }
   ]

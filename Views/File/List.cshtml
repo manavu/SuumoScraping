@@ -1,4 +1,4 @@
-﻿@model IReadOnlyList<SuumoScraping.ViewModels.FloorPlanInfo>
+@model IReadOnlyList<SuumoScraping.ViewModels.FloorPlanInfo>
 
 @{
     ViewBag.Title = "間取り一覧";
@@ -9,12 +9,11 @@
 <div class="row">
     @foreach (var data in Model)
     {
-        <div class="col-sm-3">
-            <a href="@Url.Action("Details", "Bukken", new { Id = data.BukkenId })" class="thumbnail">
-                <p>@data.FloorArea</p>
-                <img src="@Url.Action("Data", "File", new { Id = data.FileId })" class="img-thumbnail" />
+        <div class="col-sm-3 mb-4">
+            <a href="@Url.Action("Details", "Bukken", new { Id = data.BukkenId })" class="d-block text-center text-dark text-decoration-none border rounded p-2 bg-light shadow-sm">
+                <p class="font-weight-bold mb-2 text-truncate" title="@data.FloorArea">@data.FloorArea</p>
+                <img src="@Url.Action("Data", "File", new { Id = data.FileId })" class="img-fluid rounded" alt="間取り図" style="max-height: 180px; object-fit: contain;" />
             </a>
-
         </div>
     }
 </div>
