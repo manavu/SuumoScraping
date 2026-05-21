@@ -300,11 +300,11 @@ namespace SuumoScraping.Models
 
                             break;
                         case "専有面積":
-                            bukken.Add("専有面積", string.Join("", values));
+                            bukken.Add("専有面積", string.Join(string.Empty, values));
 
                             try
                             {
-                                var text = string.Join("", values);
+                                var text = string.Join(string.Empty, values);
 
                                 var m1 = Regex.Match(text, @"[0-9\.]+m");
                                 var m2 = Regex.Match(text, @"[0-9\.]*坪");
@@ -312,12 +312,12 @@ namespace SuumoScraping.Models
 
                                 if (m1.Success)
                                 {
-                                    bukken.Add("専有面積(㎡)", m1.Value.Replace("m", ""));
+                                    bukken.Add("専有面積(㎡)", m1.Value.Replace("m", string.Empty));
                                 }
 
                                 if (m2.Success)
                                 {
-                                    bukken.Add("専有面積(坪)", m2.Value.Replace("坪", ""));
+                                    bukken.Add("専有面積(坪)", m2.Value.Replace("坪", string.Empty));
                                 }
 
                                 if (m3.Success)

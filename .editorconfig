@@ -59,7 +59,7 @@ dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.SA1413.severity = none
 
 # SA1122: "" ではなく string.Empty を使用する (可読性のため "" を許容)
-dotnet_diagnostic.SA1122.severity = none
+dotnet_diagnostic.SA1122.severity = warning
 
 # SA1518: ファイル末尾の空行制限 (軽微なため無効化)
 dotnet_diagnostic.SA1518.severity = none

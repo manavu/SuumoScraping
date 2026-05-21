@@ -1,4 +1,4 @@
-﻿namespace SuumoScraping.Extensions
+namespace SuumoScraping.Extensions
 {
     using System;
     using Microsoft.AspNetCore.Http;

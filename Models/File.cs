@@ -23,7 +23,7 @@ namespace SuumoScraping.Models
             {
                 var hash = sha.ComputeHash(data);
 
-                hashString = BitConverter.ToString(hash).Replace("-", "");
+                hashString = BitConverter.ToString(hash).Replace("-", string.Empty);
             }
 
             this.ContentType = contentType;

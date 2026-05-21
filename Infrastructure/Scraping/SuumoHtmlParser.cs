@@ -179,7 +179,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                         break;
 
                     case "専有面積":
-                        var areaVal = string.Join("", values);
+                        var areaVal = string.Join(string.Empty, values);
                         rawValues["専有面積"] = areaVal;
                         try
                         {
@@ -187,10 +187,10 @@ namespace SuumoScraping.Infrastructure.Scraping
                             var m2 = Regex.Match(areaVal, @"[0-9\.]*坪");
                             var m3 = Regex.Match(areaVal, @"壁芯|登記");
 
-                            if (m1.Success) rawValues["専任面積(㎡)"] = m1.Value.Replace("m", ""); // 後方互換のため
-                            if (m1.Success) rawValues["専有面積(㎡)"] = m1.Value.Replace("m", "");
-                            if (m2.Success) rawValues["専任面積(坪)"] = m2.Value.Replace("坪", "");
-                            if (m2.Success) rawValues["専有面積(坪)"] = m2.Value.Replace("坪", "");
+                            if (m1.Success) rawValues["専任面積(㎡)"] = m1.Value.Replace("m", string.Empty); // 後方互換のため
+                            if (m1.Success) rawValues["専有面積(㎡)"] = m1.Value.Replace("m", string.Empty);
+                            if (m2.Success) rawValues["専任面積(坪)"] = m2.Value.Replace("坪", string.Empty);
+                            if (m2.Success) rawValues["専有面積(坪)"] = m2.Value.Replace("坪", string.Empty);
                             if (m3.Success) rawValues["専有面積(計測方法)"] = m3.Value;
                         }
                         catch (Exception e)
@@ -213,7 +213,7 @@ namespace SuumoScraping.Infrastructure.Scraping
             }
 
             // 2. 物件特徴ページのパース（画像やタイトル）
-            var title = "";
+            var title = string.Empty;
             var images = new List<ScrapedImage>();
 
             if (!string.IsNullOrEmpty(bukkenTokuchoHtml))
@@ -233,7 +233,7 @@ namespace SuumoScraping.Infrastructure.Scraping
                     var titleValues = titleNode.ChildNodes
                         .Where(m => m.Name == "#text")
                         .Select(m => m.InnerText.Trim());
-                    title = titleValues.FirstOrDefault() ?? "";
+                    title = titleValues.FirstOrDefault() ?? string.Empty;
                 }
 
                 var mainNode = docTokucho.DocumentNode.SelectSingleNode("//div[@id='mainContents']");

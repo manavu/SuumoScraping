@@ -107,7 +107,7 @@ namespace SuumoScraping.Models
                     bukken.Price = src.PriceRaw;
                     bukken.Price1 = src.PriceMin;
                     bukken.Price2 = src.PriceMax;
-                    bukken.Access = src.Accesses.ElementAtOrDefault(0) ?? "";
+                    bukken.Access = src.Accesses.ElementAtOrDefault(0) ?? string.Empty;
                     bukken.Access2 = src.Accesses.ElementAtOrDefault(1);
                     bukken.Access3 = src.Accesses.ElementAtOrDefault(2);
                     bukken.Direction = src.Direction;

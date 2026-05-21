@@ -20,7 +20,7 @@ namespace SuumoScraping.Extensions
             var ret = new List<string>();
 
             // 空白は余計なので除去する
-            var text = self.Replace("　", "").Replace(" ", "");
+            var text = self.Replace("　", string.Empty).Replace(" ", string.Empty);
 
             for (var i = 0; i < text.Length - 1; i++)
             {
