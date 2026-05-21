@@ -15,9 +15,7 @@ namespace SuumoScraping.Models
     {
         private readonly IConfiguration _configuration;
 
-        public ScrapingContextFactory()
-        {
-        }
+        public ScrapingContextFactory() { }
 
         public ScrapingContextFactory(IConfiguration configuration)
         {
@@ -26,7 +24,8 @@ namespace SuumoScraping.Models
 
         public ScrapingContext Create()
         {
-            var connectionString = "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
+            var connectionString =
+                "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
             // var connectionString = "server=db;database=ScrapingDb2;port=3306;uid=root;password=root;characterset=utf8;";
 
             /*
@@ -37,7 +36,8 @@ namespace SuumoScraping.Models
 
             var optionsBuilder = new DbContextOptionsBuilder<ScrapingContext>();
 
-            optionsBuilder.UseMySQL(connectionString)
+            optionsBuilder
+                .UseMySQL(connectionString)
                 // The following three options help with debugging, but should
                 // be changed or removed for production.
                 .LogTo(Console.WriteLine, LogLevel.Warning);

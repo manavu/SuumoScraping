@@ -11,7 +11,7 @@ namespace SuumoScraping.Extensions
     public static class StringExtension
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="self"></param>
         /// <returns></returns>

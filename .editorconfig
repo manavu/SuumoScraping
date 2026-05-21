@@ -90,3 +90,15 @@ dotnet_diagnostic.SA1204.severity = none
 
 # SA1312: ローカル変数の命名規則 (アンダースコア等) に対する警告を無効化
 dotnet_diagnostic.SA1312.severity = none
+
+# --- CSharpier（自動フォーマッタ）導入に伴う競合の無効化 ---
+
+# SA1009: 閉じカッコの前にスペースを入れてはならない (CSharpierの改行位置調整に伴う競合を許容)
+dotnet_diagnostic.SA1009.severity = none
+
+# SA1111: 閉じカッコは最後のパラメータと同じ行に配置する (CSharpierは閉じカッコを改行して配置するため無効化)
+dotnet_diagnostic.SA1111.severity = none
+
+# SA1502: 要素は1行に記述してはならない (CSharpierが空または短いブロックを1行にまとめるため無効化)
+dotnet_diagnostic.SA1502.severity = none
+

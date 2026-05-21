@@ -3,9 +3,7 @@ namespace SuumoScraping.Domain.Models
     using System;
     using System.Collections.Generic;
 
-    public record ScrapedBukkenSummary(
-        string Title,
-        string DetailUrl);
+    public record ScrapedBukkenSummary(string Title, string DetailUrl);
 
     public record ScrapedBukkenDetail(
         string Title,
@@ -32,15 +30,15 @@ namespace SuumoScraping.Domain.Models
         string MoveInTime,
         string Restriction,
         ScrapedCompany Company,
-        IReadOnlyList<ScrapedImage> Images);
+        IReadOnlyList<ScrapedImage> Images
+    );
 
     public record ScrapedCompany(
         string Name,
         string Address,
         string TakkenLicense,
-        string TransactionAspect);
+        string TransactionAspect
+    );
 
-    public record ScrapedImage(
-        string Url,
-        string Alt);
+    public record ScrapedImage(string Url, string Alt);
 }

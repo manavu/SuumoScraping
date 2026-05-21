@@ -116,7 +116,8 @@ namespace SuumoScraping.Models
             // ユーザーエージェント文字列をセット（オプション）
             this._client.DefaultRequestHeaders.Add(
                 "User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0");
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0"
+            );
         }
 
         ~SuumoDataProvider()
@@ -140,9 +141,9 @@ namespace SuumoScraping.Models
 
             var doc = new HtmlDocument();
 
-            doc.OptionAutoCloseOnEnd = false;  // 最後に自動で閉じる（？）
-            doc.OptionCheckSyntax = false;     // 文法チェック。
-            doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
+            doc.OptionAutoCloseOnEnd = false; // 最後に自動で閉じる（？）
+            doc.OptionCheckSyntax = false; // 文法チェック。
+            doc.OptionFixNestedTags = true; // 閉じタグが欠如している場合の処理
 
             doc.LoadHtml(htmlString);
             {
@@ -154,7 +155,10 @@ namespace SuumoScraping.Models
                     var headerNode = node.SelectSingleNode(".//div[1]/h2[1]/a[1]");
 
                     // 標準がコンセプトページになったので、余計なクエリを取り除く
-                    var uri = new Uri("https://suumo.jp" + headerNode.Attributes.Single(m => m.Name == "href").Value);
+                    var uri = new Uri(
+                        "https://suumo.jp"
+                            + headerNode.Attributes.Single(m => m.Name == "href").Value
+                    );
 
                     var title = headerNode.InnerText;
                     var detailUrl = uri.AbsolutePath;
@@ -173,7 +177,9 @@ namespace SuumoScraping.Models
 
                     if (href.InnerText == "次へ")
                     {
-                        var nextPageUrl = node.FirstChild.Attributes.Single(m => m.Name == "href").Value;
+                        var nextPageUrl = node
+                            .FirstChild.Attributes.Single(m => m.Name == "href")
+                            .Value;
 
                         // var rand = new Random();
                         // System.Threading.Thread.Sleep(1000 * (rand.Next() % 10));
@@ -200,14 +206,16 @@ namespace SuumoScraping.Models
 
                 var doc = new HtmlDocument();
 
-                doc.OptionAutoCloseOnEnd = false;  // 最後に自動で閉じる（？）
-                doc.OptionCheckSyntax = false;     // 文法チェック。
-                doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
+                doc.OptionAutoCloseOnEnd = false; // 最後に自動で閉じる（？）
+                doc.OptionCheckSyntax = false; // 文法チェック。
+                doc.OptionFixNestedTags = true; // 閉じタグが欠如している場合の処理
 
                 doc.LoadHtml(data);
 
                 // var trNodes1 = doc.DocumentNode.SelectNodes("//table[1]/tbody[1]/tr");
-                var trNodes1 = doc.DocumentNode.SelectNodes("//table[@summary='表' and position()=1]/tbody[1]/tr");
+                var trNodes1 = doc.DocumentNode.SelectNodes(
+                    "//table[@summary='表' and position()=1]/tbody[1]/tr"
+                );
                 // var trNodes1 = doc.DocumentNode.SelectNodes("//table[@summary='表']/tbody[1]/tr");
 
                 if (trNodes1 == null)
@@ -237,9 +245,9 @@ namespace SuumoScraping.Models
                     {
                         try
                         {
-                            var values_ = nodePack.Item2.SelectSingleNode(".//div/p")
-                                .ChildNodes
-                                .Where(m => m.Name == "#text")
+                            var values_ = nodePack
+                                .Item2.SelectSingleNode(".//div/p")
+                                .ChildNodes.Where(m => m.Name == "#text")
                                 .Select(m => m.InnerText)
                                 .ToList();
 
@@ -247,15 +255,17 @@ namespace SuumoScraping.Models
 
                             if (length >= 2)
                             {
-                                bukken.Add("取引態様", values_[0]);  // 取引態様
-                                bukken.Add("宅建", values_[1]);      // 宅建
-                                bukken.Add("企業住所", values_[length - 1]);   // 住所
-                                bukken.Add("企業名", values_[length - 2]);      // 企業名
+                                bukken.Add("取引態様", values_[0]); // 取引態様
+                                bukken.Add("宅建", values_[1]); // 宅建
+                                bukken.Add("企業住所", values_[length - 1]); // 住所
+                                bukken.Add("企業名", values_[length - 2]); // 企業名
                             }
                         }
                         catch (Exception e)
                         {
-                            System.Diagnostics.Debug.WriteLine("企業分解:" + url + " msg:" + e.Message);
+                            System.Diagnostics.Debug.WriteLine(
+                                "企業分解:" + url + " msg:" + e.Message
+                            );
                         }
 
                         continue;
@@ -269,8 +279,8 @@ namespace SuumoScraping.Models
                     var item = nodePack.Item1.SelectSingleNode(".//div").InnerText;
 
                     // タグ等を除くテキスト部分だけを抽出
-                    var values = nodePack.Item2.ChildNodes
-                        .Where(m => m.Name == "#text")
+                    var values = nodePack
+                        .Item2.ChildNodes.Where(m => m.Name == "#text")
                         .Select(m => m.InnerText.Trim('\t', '\r', '\n'));
 
                     switch (item)
@@ -294,7 +304,9 @@ namespace SuumoScraping.Models
                             }
                             catch (Exception e)
                             {
-                                System.Diagnostics.Debug.WriteLine("価格分解:" + url + " msg:" + e.Message);
+                                System.Diagnostics.Debug.WriteLine(
+                                    "価格分解:" + url + " msg:" + e.Message
+                                );
                             }
 
                             break;
@@ -316,7 +328,10 @@ namespace SuumoScraping.Models
 
                                 if (m2.Success)
                                 {
-                                    bukken.Add("専有面積(坪)", m2.Value.Replace("坪", string.Empty));
+                                    bukken.Add(
+                                        "専有面積(坪)",
+                                        m2.Value.Replace("坪", string.Empty)
+                                    );
                                 }
 
                                 if (m3.Success)
@@ -326,14 +341,18 @@ namespace SuumoScraping.Models
                             }
                             catch (Exception e)
                             {
-                                System.Diagnostics.Debug.WriteLine("面積分解:" + url + " msg:" + e.Message);
+                                System.Diagnostics.Debug.WriteLine(
+                                    "面積分解:" + url + " msg:" + e.Message
+                                );
                             }
 
                             break;
                         case "交通":
                             {
                                 // 空の要素があるので取り除く
-                                var tmp = values.Where(m => !string.IsNullOrWhiteSpace(m)).ToArray();
+                                var tmp = values
+                                    .Where(m => !string.IsNullOrWhiteSpace(m))
+                                    .ToArray();
 
                                 if (tmp.Length >= 1)
                                 {
@@ -372,21 +391,21 @@ namespace SuumoScraping.Models
 
                 var doc = new HtmlDocument();
 
-                doc.OptionAutoCloseOnEnd = false;  // 最後に自動で閉じる（？）
-                doc.OptionCheckSyntax = false;     // 文法チェック。
-                doc.OptionFixNestedTags = true;    // 閉じタグが欠如している場合の処理
+                doc.OptionAutoCloseOnEnd = false; // 最後に自動で閉じる（？）
+                doc.OptionCheckSyntax = false; // 文法チェック。
+                doc.OptionFixNestedTags = true; // 閉じタグが欠如している場合の処理
 
                 doc.LoadHtml(data);
 
                 // 物件名が入っているノードを取得
-                var titleNode = doc.DocumentNode
-                    .SelectNodes("//table[@summary='表']/tbody[1]/tr[1]/td")
+                var titleNode = doc
+                    .DocumentNode.SelectNodes("//table[@summary='表']/tbody[1]/tr[1]/td")
                     .FirstOrDefault();
 
                 if (titleNode != null)
                 {
-                    var values = titleNode.ChildNodes
-                        .Where(m => m.Name == "#text")
+                    var values = titleNode
+                        .ChildNodes.Where(m => m.Name == "#text")
                         .Select(m => m.InnerText.Trim('\t', '\r', '\n'));
 
                     bukken.Add("タイトル", values.First());
@@ -408,7 +427,9 @@ namespace SuumoScraping.Models
                         var imageTag = imageNode.SelectSingleNode(".//img");
 
                         // 画像のURL
-                        var imageUrl = imageTag.Attributes.SingleOrDefault(m => m.Name == "rel")?.Value;
+                        var imageUrl = imageTag
+                            .Attributes.SingleOrDefault(m => m.Name == "rel")
+                            ?.Value;
                         if (string.IsNullOrEmpty(imageUrl))
                         {
                             imageUrl = imageTag.Attributes.Single(m => m.Name == "src").Value;

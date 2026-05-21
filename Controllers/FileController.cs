@@ -35,8 +35,8 @@ namespace SuumoScraping.Controllers
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                var model = db.NewBukkens
-                    .SelectMany(m => m.Files)
+                var model = db
+                    .NewBukkens.SelectMany(m => m.Files)
                     .Where(m => m.Type == "間取り図")
                     .Select(m => new FloorPlanInfo()
                     {

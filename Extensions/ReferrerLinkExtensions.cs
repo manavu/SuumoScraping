@@ -10,11 +10,14 @@ namespace SuumoScraping.Extensions
     public static class ReferrerLinkExtensions
     {
         public static IHtmlContent ReferrerLink(
-          this IHtmlHelper htmlHelper,
-          string linkText,
-          IDictionary<string, object> htmlAttributes)
+            this IHtmlHelper htmlHelper,
+            string linkText,
+            IDictionary<string, object> htmlAttributes
+        )
         {
-            var referrer = htmlHelper.ViewContext.HttpContext.Request.GetTypedHeaders().Referer.ToString();
+            var referrer = htmlHelper
+                .ViewContext.HttpContext.Request.GetTypedHeaders()
+                .Referer.ToString();
 
             if (referrer == null)
             {
@@ -36,17 +39,16 @@ namespace SuumoScraping.Extensions
         }
 
         public static IHtmlContent ReferrerLink(
-          this IHtmlHelper htmlHelper,
-          string linkText,
-          object htmlAttributes)
+            this IHtmlHelper htmlHelper,
+            string linkText,
+            object htmlAttributes
+        )
         {
             var dic = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
             return ReferrerLink(htmlHelper, linkText, dic);
         }
 
-        public static IHtmlContent ReferrerLink(
-          this IHtmlHelper htmlHelper,
-          string linkText)
+        public static IHtmlContent ReferrerLink(this IHtmlHelper htmlHelper, string linkText)
         {
             return ReferrerLink(htmlHelper, linkText, (object)null);
         }

@@ -6,6 +6,10 @@ namespace SuumoScraping.Domain.Gateways
     {
         AreaPageResult ParseAreaPage(string url, string htmlString);
 
-        ScrapedBukkenDetail ParseBukkenDetail(string url, string bukkengaiyoHtml, string bukkenTokuchoHtml);
+        ScrapedBukkenDetail ParseBukkenDetail(
+            string url,
+            string bukkengaiyoHtml,
+            string bukkenTokuchoHtml
+        );
     }
 }

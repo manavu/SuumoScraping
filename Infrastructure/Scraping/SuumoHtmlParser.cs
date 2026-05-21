@@ -80,7 +80,11 @@ namespace SuumoScraping.Infrastructure.Scraping
             return new AreaPageResult(bukkens, nextPageUrl);
         }
 
-        public ScrapedBukkenDetail ParseBukkenDetail(string url, string bukkengaiyoHtml, string bukkenTokuchoHtml)
+        public ScrapedBukkenDetail ParseBukkenDetail(
+            string url,
+            string bukkengaiyoHtml,
+            string bukkenTokuchoHtml
+        )
         {
             if (string.IsNullOrEmpty(bukkengaiyoHtml))
             {
@@ -96,10 +100,17 @@ namespace SuumoScraping.Infrastructure.Scraping
             docGaiyo.OptionFixNestedTags = true;
             docGaiyo.LoadHtml(bukkengaiyoHtml);
 
-            var trNodes = docGaiyo.DocumentNode.SelectNodes("//table[@summary='表' and position()=1]/tbody[1]/tr");
+            var trNodes = docGaiyo.DocumentNode.SelectNodes(
+                "//table[@summary='表' and position()=1]/tbody[1]/tr"
+            );
             if (trNodes == null)
             {
-                throw new SuumoParseException("物件概要テーブルのノード取得に失敗しました。HTML構造が変更された可能性があります。", url, "bukkengaiyo_table", bukkengaiyoHtml);
+                throw new SuumoParseException(
+                    "物件概要テーブルのノード取得に失敗しました。HTML構造が変更された可能性があります。",
+                    url,
+                    "bukkengaiyo_table",
+                    bukkengaiyoHtml
+                );
             }
 
             var nodePacks = new List<Tuple<HtmlNode, HtmlNode>>();
@@ -123,9 +134,11 @@ namespace SuumoScraping.Infrastructure.Scraping
                 {
                     try
                     {
-                        var values_ = nodePack.Item2.SelectSingleNode(".//div/p")
-                            ?.ChildNodes
-                            ?.Where(m => m.Name == "#text" && !string.IsNullOrWhiteSpace(m.InnerText))
+                        var values_ = nodePack
+                            .Item2.SelectSingleNode(".//div/p")
+                            ?.ChildNodes?.Where(m =>
+                                m.Name == "#text" && !string.IsNullOrWhiteSpace(m.InnerText)
+                            )
                             ?.Select(m => m.InnerText.Trim())
                             ?.ToList();
 
@@ -143,7 +156,12 @@ namespace SuumoScraping.Infrastructure.Scraping
                     }
                     catch (Exception e)
                     {
-                        this._logger.LogWarning(e, "会社概要のパース中にエラーが発生しました: {Url}. メッセージ: {Message}", url, e.Message);
+                        this._logger.LogWarning(
+                            e,
+                            "会社概要のパース中にエラーが発生しました: {Url}. メッセージ: {Message}",
+                            url,
+                            e.Message
+                        );
                     }
 
                     continue;
@@ -155,8 +173,8 @@ namespace SuumoScraping.Infrastructure.Scraping
                 }
 
                 var item = nodePack.Item1.SelectSingleNode(".//div").InnerText;
-                var values = nodePack.Item2.ChildNodes
-                    .Where(m => m.Name == "#text")
+                var values = nodePack
+                    .Item2.ChildNodes.Where(m => m.Name == "#text")
                     .Select(m => m.InnerText.Trim());
 
                 switch (item)
@@ -169,12 +187,20 @@ namespace SuumoScraping.Infrastructure.Scraping
                             try
                             {
                                 var prices = priceVal.Split('～');
-                                if (prices.Length >= 1) rawValues["価格最小"] = prices[0];
-                                if (prices.Length >= 2) rawValues["価格最大"] = prices[1];
+                                if (prices.Length >= 1)
+                                    rawValues["価格最小"] = prices[0];
+                                if (prices.Length >= 2)
+                                    rawValues["価格最大"] = prices[1];
                             }
                             catch (Exception e)
                             {
-                                this._logger.LogWarning(e, "価格のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}", url, priceVal, e.Message);
+                                this._logger.LogWarning(
+                                    e,
+                                    "価格のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}",
+                                    url,
+                                    priceVal,
+                                    e.Message
+                                );
                             }
                         }
 
@@ -189,24 +215,38 @@ namespace SuumoScraping.Infrastructure.Scraping
                             var m2 = Regex.Match(areaVal, @"[0-9\.]*坪");
                             var m3 = Regex.Match(areaVal, @"壁芯|登記");
 
-                            if (m1.Success) rawValues["専任面積(㎡)"] = m1.Value.Replace("m", string.Empty); // 後方互換のため
-                            if (m1.Success) rawValues["専有面積(㎡)"] = m1.Value.Replace("m", string.Empty);
-                            if (m2.Success) rawValues["専任面積(坪)"] = m2.Value.Replace("坪", string.Empty);
-                            if (m2.Success) rawValues["専有面積(坪)"] = m2.Value.Replace("坪", string.Empty);
-                            if (m3.Success) rawValues["専有面積(計測方法)"] = m3.Value;
+                            if (m1.Success)
+                                rawValues["専任面積(㎡)"] = m1.Value.Replace("m", string.Empty); // 後方互換のため
+                            if (m1.Success)
+                                rawValues["専有面積(㎡)"] = m1.Value.Replace("m", string.Empty);
+                            if (m2.Success)
+                                rawValues["専任面積(坪)"] = m2.Value.Replace("坪", string.Empty);
+                            if (m2.Success)
+                                rawValues["専有面積(坪)"] = m2.Value.Replace("坪", string.Empty);
+                            if (m3.Success)
+                                rawValues["専有面積(計測方法)"] = m3.Value;
                         }
                         catch (Exception e)
                         {
-                            this._logger.LogWarning(e, "専有面積のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}", url, areaVal, e.Message);
+                            this._logger.LogWarning(
+                                e,
+                                "専有面積のパース中にエラーが発生しました: {Url}. 値: {Val}. メッセージ: {Message}",
+                                url,
+                                areaVal,
+                                e.Message
+                            );
                         }
 
                         break;
 
                     case "交通":
                         var tmp = values.Where(m => !string.IsNullOrWhiteSpace(m)).ToArray();
-                        if (tmp.Length >= 1) rawValues["交通1"] = tmp[0];
-                        if (tmp.Length >= 2) rawValues["交通2"] = tmp[1];
-                        if (tmp.Length >= 3) rawValues["交通3"] = tmp[2];
+                        if (tmp.Length >= 1)
+                            rawValues["交通1"] = tmp[0];
+                        if (tmp.Length >= 2)
+                            rawValues["交通2"] = tmp[1];
+                        if (tmp.Length >= 3)
+                            rawValues["交通3"] = tmp[2];
                         break;
 
                     default:
@@ -227,19 +267,21 @@ namespace SuumoScraping.Infrastructure.Scraping
                 docTokucho.OptionFixNestedTags = true;
                 docTokucho.LoadHtml(bukkenTokuchoHtml);
 
-                var titleNode = docTokucho.DocumentNode
-                    .SelectNodes("//table[@summary='表']/tbody[1]/tr[1]/td")
+                var titleNode = docTokucho
+                    .DocumentNode.SelectNodes("//table[@summary='表']/tbody[1]/tr[1]/td")
                     ?.FirstOrDefault();
 
                 if (titleNode != null)
                 {
-                    var titleValues = titleNode.ChildNodes
-                        .Where(m => m.Name == "#text")
+                    var titleValues = titleNode
+                        .ChildNodes.Where(m => m.Name == "#text")
                         .Select(m => m.InnerText.Trim());
                     title = titleValues.FirstOrDefault() ?? string.Empty;
                 }
 
-                var mainNode = docTokucho.DocumentNode.SelectSingleNode("//div[@id='mainContents']");
+                var mainNode = docTokucho.DocumentNode.SelectSingleNode(
+                    "//div[@id='mainContents']"
+                );
                 var imageNodes = mainNode?.SelectNodes(".//a[@class='jscNyroModal nyroModal']");
 
                 if (imageNodes != null)
@@ -249,14 +291,21 @@ namespace SuumoScraping.Infrastructure.Scraping
                         var imageTag = imageNode.SelectSingleNode(".//img");
                         if (imageTag != null)
                         {
-                            var imageUrl = imageTag.Attributes.SingleOrDefault(m => m.Name == "rel")?.Value;
+                            var imageUrl = imageTag
+                                .Attributes.SingleOrDefault(m => m.Name == "rel")
+                                ?.Value;
                             if (string.IsNullOrEmpty(imageUrl))
                             {
-                                var srcAttr = imageTag.Attributes.SingleOrDefault(m => m.Name == "src");
-                                if (srcAttr != null) imageUrl = srcAttr.Value;
+                                var srcAttr = imageTag.Attributes.SingleOrDefault(m =>
+                                    m.Name == "src"
+                                );
+                                if (srcAttr != null)
+                                    imageUrl = srcAttr.Value;
                             }
 
-                            var imageAlt = imageTag.Attributes.SingleOrDefault(m => m.Name == "alt")?.Value;
+                            var imageAlt = imageTag
+                                .Attributes.SingleOrDefault(m => m.Name == "alt")
+                                ?.Value;
                             imageAlt = string.IsNullOrEmpty(imageAlt) ? "-" : imageAlt;
 
                             if (imageUrl != null && imageUrl.Contains(".jpg"))
@@ -278,20 +327,28 @@ namespace SuumoScraping.Infrastructure.Scraping
                 GetOrDefault(rawValues, "企業名"),
                 GetOrDefault(rawValues, "企業住所"),
                 GetOrDefault(rawValues, "宅建"),
-                GetOrDefault(rawValues, "取引態様"));
+                GetOrDefault(rawValues, "取引態様")
+            );
 
             var accesses = new List<string>();
-            if (rawValues.ContainsKey("交通1")) accesses.Add(rawValues["交通1"]);
-            if (rawValues.ContainsKey("交通2")) accesses.Add(rawValues["交通2"]);
-            if (rawValues.ContainsKey("交通3")) accesses.Add(rawValues["交通3"]);
+            if (rawValues.ContainsKey("交通1"))
+                accesses.Add(rawValues["交通1"]);
+            if (rawValues.ContainsKey("交通2"))
+                accesses.Add(rawValues["交通2"]);
+            if (rawValues.ContainsKey("交通3"))
+                accesses.Add(rawValues["交通3"]);
 
             var priceRaw = GetOrDefault(rawValues, "価格");
             var priceMin = GetOrDefault(rawValues, "価格最小", "0").ToDigit();
-            var priceMax = rawValues.ContainsKey("価格最大") ? (decimal?)rawValues["価格最大"].ToDigit() : null;
+            var priceMax = rawValues.ContainsKey("価格最大")
+                ? (decimal?)rawValues["価格最大"].ToDigit()
+                : null;
 
             var floorAreaRaw = GetOrDefault(rawValues, "専有面積");
             var floorAreaSqm = Convert.ToDecimal(GetOrDefault(rawValues, "専有面積(㎡)", "0"));
-            var floorTubo = rawValues.ContainsKey("専有面積(坪)") ? (decimal?)Convert.ToDecimal(rawValues["専有面積(坪)"]) : null;
+            var floorTubo = rawValues.ContainsKey("専有面積(坪)")
+                ? (decimal?)Convert.ToDecimal(rawValues["専有面積(坪)"])
+                : null;
 
             return new ScrapedBukkenDetail(
                 title,
@@ -318,10 +375,15 @@ namespace SuumoScraping.Infrastructure.Scraping
                 GetOrDefault(rawValues, "入居時期"),
                 GetOrDefault(rawValues, "その他制限事項"),
                 company,
-                images);
+                images
+            );
         }
 
-        private static string GetOrDefault(Dictionary<string, string> dict, string key, string defaultValue = "")
+        private static string GetOrDefault(
+            Dictionary<string, string> dict,
+            string key,
+            string defaultValue = ""
+        )
         {
             return dict.TryGetValue(key, out var val) ? val : defaultValue;
         }

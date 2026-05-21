@@ -146,13 +146,16 @@ namespace SuumoScraping.Tests
         {
             // Arrange
             var url = "https://suumo.jp/ms/chuko/saitama/sc_toda/nc_invalid/";
-            var invalidGaiyoHtml = "<html><body><div>物件概要テーブルがありません。</div></body></html>";
+            var invalidGaiyoHtml =
+                "<html><body><div>物件概要テーブルがありません。</div></body></html>";
             var tokuchoHtml = "";
 
             var parser = new SuumoHtmlParser(NullLogger<SuumoHtmlParser>.Instance);
 
             // Act & Assert
-            var exception = Assert.Throws<SuumoParseException>(() => parser.ParseBukkenDetail(url, invalidGaiyoHtml, tokuchoHtml));
+            var exception = Assert.Throws<SuumoParseException>(() =>
+                parser.ParseBukkenDetail(url, invalidGaiyoHtml, tokuchoHtml)
+            );
             Assert.Equal(url, exception.Url);
             Assert.Equal("bukkengaiyo_table", exception.ElementName);
             Assert.Contains("物件概要テーブルのノード取得に失敗しました", exception.Message);

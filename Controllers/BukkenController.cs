@@ -23,7 +23,11 @@ namespace SuumoScraping.Controllers
 
         private readonly BukkenService _bukkenService;
 
-        public BukkenController(IScrapingContextFactory scrapingContextFactory, ILogger<SuumoDataProvider> logger, BukkenService bukkenService)
+        public BukkenController(
+            IScrapingContextFactory scrapingContextFactory,
+            ILogger<SuumoDataProvider> logger,
+            BukkenService bukkenService
+        )
         {
             _scrapingContextFactory = scrapingContextFactory;
             _logger = logger;
@@ -91,15 +95,19 @@ namespace SuumoScraping.Controllers
                 if (model.MinPrice.HasValue)
                 {
                     var minPrice = model.MinPrice.Value * 10000m;
-                    bukkens = bukkens
-                        .Where(m => m.PriceChangesets.OrderByDescending(n => n.ChangedAt).First().Min >= minPrice);
+                    bukkens = bukkens.Where(m =>
+                        m.PriceChangesets.OrderByDescending(n => n.ChangedAt).First().Min
+                        >= minPrice
+                    );
                 }
 
                 if (model.MaxPrice.HasValue)
                 {
                     var maxPrice = model.MaxPrice.Value * 10000m;
-                    bukkens = bukkens
-                        .Where(m => m.PriceChangesets.OrderByDescending(n => n.ChangedAt).FirstOrDefault().Min <= maxPrice);
+                    bukkens = bukkens.Where(m =>
+                        m.PriceChangesets.OrderByDescending(n => n.ChangedAt).FirstOrDefault().Min
+                        <= maxPrice
+                    );
                 }
 
                 if (model.MinArea.HasValue)
@@ -133,8 +141,8 @@ namespace SuumoScraping.Controllers
                         Direction = m.Direction,
                         FloorArea = m.FloorArea,
                         Layout = m.Layout,
-                        Price = m.PriceChangesets
-                            .OrderByDescending(n => n.ChangedAt)
+                        Price = m
+                            .PriceChangesets.OrderByDescending(n => n.ChangedAt)
                             .FirstOrDefault()
                             .Text,
                         Title = m.Title,
@@ -158,7 +166,8 @@ namespace SuumoScraping.Controllers
         {
             var filter = this.TempData.Get<FilterForm>("FilterForm") ?? new FilterForm();
 
-            var data = this.TempData.Get<IList<BukkenInfo>>("BukkenInfos") ?? new List<BukkenInfo>();
+            var data =
+                this.TempData.Get<IList<BukkenInfo>>("BukkenInfos") ?? new List<BukkenInfo>();
 
             this.TempData.Put("BukkenInfos", data);
             this.TempData.Put("FilterForm", filter);
@@ -171,8 +180,8 @@ namespace SuumoScraping.Controllers
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                var model = db.NewBukkens
-                    .Include(m => m.PriceChangesets)
+                var model = db
+                    .NewBukkens.Include(m => m.PriceChangesets)
                     .Include(m => m.Files)
                     .Where(m => m.Id == id)
                     .Select(m => new BukkenInfo
@@ -186,8 +195,8 @@ namespace SuumoScraping.Controllers
                         Direction = m.Direction,
                         Floor = m.Floor,
                         Layout = m.Layout,
-                        Price = m.PriceChangesets
-                            .OrderByDescending(n => n.ChangedAt)
+                        Price = m
+                            .PriceChangesets.OrderByDescending(n => n.ChangedAt)
                             .FirstOrDefault()
                             .Text,
                         Title = m.Title,
@@ -209,12 +218,11 @@ namespace SuumoScraping.Controllers
                             Id = n.File.Id,
                             Title = n.Type,
                         }),
-                        Prices = m.PriceChangesets
-                            .Select(n => new PriceInfo()
-                            {
-                                ChangedAt = n.ChangedAt,
-                                Value = n.Text,
-                            }),
+                        Prices = m.PriceChangesets.Select(n => new PriceInfo()
+                        {
+                            ChangedAt = n.ChangedAt,
+                            Value = n.Text,
+                        }),
                         ImportCount = m.ImportCount,
                     })
                     .Single();

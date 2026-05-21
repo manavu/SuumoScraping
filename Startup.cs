@@ -28,7 +28,8 @@ namespace SuumoScraping
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
+            var connectionString =
+                "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
             services.AddScoped<IScrapingContextFactory, ScrapingContextFactory>();
             services.AddScoped<ISuumoDataProvider, SuumoDataProvider>();
             services.AddScoped<ISuumoHtmlFetcher, SuumoHtmlFetcher>();
@@ -38,12 +39,13 @@ namespace SuumoScraping
             services.AddScoped<BukkenService>();
 
             // Use MySQL provider from Oracle
-            services.AddDbContext<ScrapingContext>(
-                dbContextOptions => dbContextOptions
+            services.AddDbContext<ScrapingContext>(dbContextOptions =>
+                dbContextOptions
                     .UseMySQL(connectionString)
                     .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors());
+                    .EnableDetailedErrors()
+            );
 
             // add memory cache
             services.AddDistributedMemoryCache();
@@ -57,8 +59,7 @@ namespace SuumoScraping
                 options.Cookie.Name = "SessionCookie";
             });
 
-            services.AddControllersWithViews()
-                .AddSessionStateTempDataProvider();
+            services.AddControllersWithViews().AddSessionStateTempDataProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,7 +87,8 @@ namespace SuumoScraping
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                );
             });
         }
     }

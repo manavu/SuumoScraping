@@ -16,7 +16,8 @@ namespace SuumoScraping.Extensions
         public static TValue GetOrDefault<TKey, TValue>(
             this IDictionary<TKey, TValue> self,
             TKey key,
-            TValue defaultValue = default(TValue))
+            TValue defaultValue = default(TValue)
+        )
         {
             return self.TryGetValue(key, out TValue value) ? value : defaultValue;
         }

@@ -17,7 +17,12 @@ namespace SuumoScraping.Domain.Exceptions
     {
         public int? HttpStatusCode { get; }
 
-        public SuumoFetchException(string message, string url, int? statusCode = null, Exception innerException = null)
+        public SuumoFetchException(
+            string message,
+            string url,
+            int? statusCode = null,
+            Exception innerException = null
+        )
             : base(message, url, innerException)
         {
             this.HttpStatusCode = statusCode;
@@ -30,7 +35,13 @@ namespace SuumoScraping.Domain.Exceptions
 
         public string RawHtml { get; }
 
-        public SuumoParseException(string message, string url, string elementName, string rawHtml = null, Exception innerException = null)
+        public SuumoParseException(
+            string message,
+            string url,
+            string elementName,
+            string rawHtml = null,
+            Exception innerException = null
+        )
             : base($"{message} [Failed Item: {elementName}]", url, innerException)
         {
             this.ElementName = elementName;

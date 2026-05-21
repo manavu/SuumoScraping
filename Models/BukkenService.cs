@@ -12,7 +12,10 @@ namespace SuumoScraping.Models
         private readonly IScrapingContextFactory _scrapingContextFactory;
         private readonly ILogger<BukkenService> _logger;
 
-        public BukkenService(IScrapingContextFactory scrapingContextFactory, ILogger<BukkenService> logger)
+        public BukkenService(
+            IScrapingContextFactory scrapingContextFactory,
+            ILogger<BukkenService> logger
+        )
         {
             _scrapingContextFactory = scrapingContextFactory;
             _logger = logger;
@@ -22,9 +25,10 @@ namespace SuumoScraping.Models
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                var urls = from bukken in db.Bukkens
-                           group bukken.DetailUrl by bukken.DetailUrl into g
-                           select g.Key;
+                var urls =
+                    from bukken in db.Bukkens
+                    group bukken.DetailUrl by bukken.DetailUrl into g
+                    select g.Key;
 
                 foreach (var url in urls.ToList())
                 {
@@ -47,18 +51,18 @@ namespace SuumoScraping.Models
             {
                 db.Database.SetCommandTimeout(0);
 
-                var bukkens = db.Bukkens
-                    .Include(m => m.Files)
-                    .ThenInclude(m => m.File)
+                var bukkens = db
+                    .Bukkens.Include(m => m.Files)
+                        .ThenInclude(m => m.File)
                     .Include(m => m.FullText)
                     .Where(m => m.DetailUrl == url)
                     .OrderBy(m => m.ImportedDate)
                     .ToList();
 
-                var newBukken = db.NewBukkens
-                    .Include(m => m.PriceChangesets)
+                var newBukken = db
+                    .NewBukkens.Include(m => m.PriceChangesets)
                     .Include(m => m.Files)
-                    .ThenInclude(m => m.File)
+                        .ThenInclude(m => m.File)
                     .SingleOrDefault(m => m.DetailUrl == url);
 
                 if (newBukken == null)
@@ -114,11 +118,15 @@ namespace SuumoScraping.Models
 
                     bukken.Price2 = bukken.Price2 != 0 ? bukken.Price2 : null;
 
-                    var currentPrice = newBukken.PriceChangesets
-                        .OrderByDescending(m => m.ChangedAt)
+                    var currentPrice = newBukken
+                        .PriceChangesets.OrderByDescending(m => m.ChangedAt)
                         .FirstOrDefault();
 
-                    if (currentPrice == null || currentPrice.Min != bukken.Price1 || currentPrice.Max != bukken.Price2)
+                    if (
+                        currentPrice == null
+                        || currentPrice.Min != bukken.Price1
+                        || currentPrice.Max != bukken.Price2
+                    )
                     {
                         var newPrice = new Price();
                         newPrice.Min = bukken.Price1;

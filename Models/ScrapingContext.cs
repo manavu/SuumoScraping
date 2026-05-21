@@ -27,9 +27,7 @@ namespace SuumoScraping.Models
             */
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
 
         public virtual DbSet<NewBukken> NewBukkens { get; set; }
 
