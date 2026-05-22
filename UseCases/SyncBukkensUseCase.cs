@@ -7,7 +7,7 @@ namespace SuumoScraping.UseCases
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Gateways;
-    using SuumoScraping.Models;
+    using SuumoScraping.Domain.Models;
 
     public class SyncBukkensUseCase
     {

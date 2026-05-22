@@ -1,4 +1,4 @@
-namespace SuumoScraping.Models
+namespace SuumoScraping.Infrastructure.Persistence
 {
     using System;
     using System.Collections.Generic;
@@ -10,6 +10,7 @@ namespace SuumoScraping.Models
     using Microsoft.EntityFrameworkCore.Storage;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Gateways;
+    using SuumoScraping.Domain.Models;
     using SuumoScraping.ViewModels;
 
     public partial class ScrapingContext : DbContext, IScrapingContext

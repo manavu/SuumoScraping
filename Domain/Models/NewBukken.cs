@@ -1,4 +1,4 @@
-namespace SuumoScraping.Models
+namespace SuumoScraping.Domain.Models
 {
     using System;
     using System.Collections.Generic;
@@ -6,15 +6,14 @@ namespace SuumoScraping.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using Microsoft.EntityFrameworkCore;
 
-    [Table("bukkens")]
-    [Index(nameof(DetailUrl), nameof(ImportedDate), Name = "IX_Bukkens_DetailUrl_ImportedDate")]
-    [Index(nameof(ImportedDate), nameof(DetailUrl), Name = "IX_Bukkens_ImportedDate_DetailUrl")]
-    // [Index(nameof(FullText.Id), Name="IX_FullText_Id")]  // こういうことはできないので、OnModelCreation で対応するしかないかも
-    public partial class Bukken
+    [Table("newbukkens")]
+    [Index(nameof(DetailUrl), Name = "IX_Bukkens_DetailUrl", IsUnique = true)]
+    public partial class NewBukken
     {
-        public Bukken()
+        public NewBukken()
         {
-            this.Files = new HashSet<BukkenFile>();
+            this.Files = new HashSet<NewBukkenFile>();
+            this.PriceChangesets = new HashSet<Price>();
             this.Company = new Company();
         }
 
@@ -24,20 +23,6 @@ namespace SuumoScraping.Models
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }
-
-        [Display(Name = "価格（文字列）")]
-        [Required]
-        [MaxLength(50)]
-        public string Price { get; set; }
-
-        [Display(Name = "価格")]
-        [Required]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Price1 { get; set; }
-
-        [Display(Name = "価格（最大値）")]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal? Price2 { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -50,7 +35,7 @@ namespace SuumoScraping.Models
         [Display(Name = "交通手段1")]
         [Required]
         [MaxLength(100)]
-        public string Access { get; set; }
+        public string Access1 { get; set; }
 
         [Display(Name = "交通手段2")]
         [MaxLength(100)]
@@ -88,13 +73,8 @@ namespace SuumoScraping.Models
         public string Balcony { get; set; }
 
         [Display(Name = "築年月")]
-        [Required]
-        [MaxLength(20)]
-        public string BuiltYears { get; set; }
-
-        [Required]
-        [Column(TypeName = "date")]
-        public System.DateTime ImportedDate { get; set; }
+        [Column(TypeName = "datetime")] // 型を指定しないと datetime(6) になる
+        public DateTime? BuiltYears { get; set; }
 
         [MaxLength(50)]
         public string ManagementFee { get; set; }
@@ -131,9 +111,18 @@ namespace SuumoScraping.Models
 
         public Company Company { get; set; }
 
-        [ForeignKey("FullText_Id")]
-        public virtual BukkenFulltext FullText { get; set; }
+        public virtual ICollection<NewBukkenFile> Files { get; set; }
 
-        public virtual ICollection<BukkenFile> Files { get; set; }
+        [Display(Name = "インポート回数")]
+        public int ImportCount { get; set; }
+
+        [Display(Name = "インポート日")]
+        [Column(TypeName = "datetime")] // 型を指定しないと datetime(6) になる
+        public DateTime ImportedAt { get; set; }
+
+        [Column(TypeName = "datetime")] // 型を指定しないと datetime(6) になる
+        public DateTime CreatedAt { get; set; }
+
+        public virtual ICollection<Price> PriceChangesets { get; set; }
     }
 }

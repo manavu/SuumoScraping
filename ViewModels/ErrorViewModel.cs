@@ -1,6 +1,6 @@
 using System;
 
-namespace SuumoScraping.Models
+namespace SuumoScraping.ViewModels
 {
     public class ErrorViewModel
     {

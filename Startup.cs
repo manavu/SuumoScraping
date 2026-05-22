@@ -13,8 +13,9 @@ namespace SuumoScraping
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Gateways;
+    using SuumoScraping.Domain.Services;
+    using SuumoScraping.Infrastructure.Persistence;
     using SuumoScraping.Infrastructure.Scraping;
-    using SuumoScraping.Models;
     using SuumoScraping.UseCases;
 
     public class Startup

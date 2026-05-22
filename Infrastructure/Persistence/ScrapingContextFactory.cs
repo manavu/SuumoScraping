@@ -1,4 +1,4 @@
-namespace SuumoScraping.Models
+namespace SuumoScraping.Infrastructure.Persistence
 {
     using System;
     using Microsoft.EntityFrameworkCore;

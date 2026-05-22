@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SuumoScraping.Models;
+using SuumoScraping.Domain.Models;
+using SuumoScraping.Infrastructure.Persistence;
 
 #nullable disable
 
@@ -23,7 +24,7 @@ namespace SuumoScraping.Migrations
 
 
 
-            modelBuilder.Entity("SuumoScraping.Models.Bukken", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.Bukken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,7 +155,7 @@ namespace SuumoScraping.Migrations
                     b.ToTable("bukkens");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.BukkenFile", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.BukkenFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,7 +181,7 @@ namespace SuumoScraping.Migrations
                     b.ToTable("bukkenfiles");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.BukkenFulltext", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.BukkenFulltext", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,7 +200,7 @@ namespace SuumoScraping.Migrations
                     b.ToTable("bukkenfulltexts");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.File", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.File", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -231,7 +232,7 @@ namespace SuumoScraping.Migrations
                     b.ToTable("files");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.NewBukken", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.NewBukken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -349,7 +350,7 @@ namespace SuumoScraping.Migrations
                     b.ToTable("newbukkens");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.NewBukkenFile", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.NewBukkenFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -375,7 +376,7 @@ namespace SuumoScraping.Migrations
                     b.ToTable("newbukkenfiles");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.Price", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.Price", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -403,13 +404,13 @@ namespace SuumoScraping.Migrations
                     b.ToTable("prices");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.Bukken", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.Bukken", b =>
                 {
-                    b.HasOne("SuumoScraping.Models.BukkenFulltext", "FullText")
+                    b.HasOne("SuumoScraping.Domain.Models.BukkenFulltext", "FullText")
                         .WithMany()
                         .HasForeignKey("FullText_Id");
 
-                    b.OwnsOne("SuumoScraping.Models.Company", "Company", b1 =>
+                    b.OwnsOne("SuumoScraping.Domain.Models.Company", "Company", b1 =>
                         {
                             b1.Property<int>("BukkenId")
                                 .HasColumnType("int");
@@ -443,13 +444,13 @@ namespace SuumoScraping.Migrations
                     b.Navigation("FullText");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.BukkenFile", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.BukkenFile", b =>
                 {
-                    b.HasOne("SuumoScraping.Models.Bukken", "Bukken")
+                    b.HasOne("SuumoScraping.Domain.Models.Bukken", "Bukken")
                         .WithMany("Files")
                         .HasForeignKey("Bukken_Id");
 
-                    b.HasOne("SuumoScraping.Models.File", "File")
+                    b.HasOne("SuumoScraping.Domain.Models.File", "File")
                         .WithMany("BukkenFiles")
                         .HasForeignKey("File_Id");
 
@@ -458,9 +459,9 @@ namespace SuumoScraping.Migrations
                     b.Navigation("File");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.NewBukken", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.NewBukken", b =>
                 {
-                    b.OwnsOne("SuumoScraping.Models.Company", "Company", b1 =>
+                    b.OwnsOne("SuumoScraping.Domain.Models.Company", "Company", b1 =>
                         {
                             b1.Property<int>("NewBukkenId")
                                 .HasColumnType("int");
@@ -492,13 +493,13 @@ namespace SuumoScraping.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.NewBukkenFile", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.NewBukkenFile", b =>
                 {
-                    b.HasOne("SuumoScraping.Models.File", "File")
+                    b.HasOne("SuumoScraping.Domain.Models.File", "File")
                         .WithMany()
                         .HasForeignKey("File_Id");
 
-                    b.HasOne("SuumoScraping.Models.NewBukken", "NewBukken")
+                    b.HasOne("SuumoScraping.Domain.Models.NewBukken", "NewBukken")
                         .WithMany("Files")
                         .HasForeignKey("NewBukken_Id");
 
@@ -507,26 +508,26 @@ namespace SuumoScraping.Migrations
                     b.Navigation("NewBukken");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.Price", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.Price", b =>
                 {
-                    b.HasOne("SuumoScraping.Models.NewBukken", "NewBukken")
+                    b.HasOne("SuumoScraping.Domain.Models.NewBukken", "NewBukken")
                         .WithMany("PriceChangesets")
                         .HasForeignKey("NewBukken_Id");
 
                     b.Navigation("NewBukken");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.Bukken", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.Bukken", b =>
                 {
                     b.Navigation("Files");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.File", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.File", b =>
                 {
                     b.Navigation("BukkenFiles");
                 });
 
-            modelBuilder.Entity("SuumoScraping.Models.NewBukken", b =>
+            modelBuilder.Entity("SuumoScraping.Domain.Models.NewBukken", b =>
                 {
                     b.Navigation("Files");
 

@@ -11,8 +11,8 @@ namespace SuumoScraping.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
+    using SuumoScraping.Domain.Models;
     using SuumoScraping.Extensions;
-    using SuumoScraping.Models;
     using SuumoScraping.UseCases;
     using SuumoScraping.ViewModels;
 
