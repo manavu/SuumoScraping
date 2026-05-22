@@ -22,12 +22,12 @@ namespace SuumoScraping.Controllers
 
         private readonly GetBukkenDetailsUseCase _getBukkenDetailsUseCase;
 
-        private readonly ILogger<SuumoDataProvider> _logger;
+        private readonly ILogger<BukkenController> _logger;
 
         public BukkenController(
             GetFilteredBukkensUseCase getFilteredBukkensUseCase,
             GetBukkenDetailsUseCase getBukkenDetailsUseCase,
-            ILogger<SuumoDataProvider> logger
+            ILogger<BukkenController> logger
         )
         {
             _getFilteredBukkensUseCase = getFilteredBukkensUseCase;

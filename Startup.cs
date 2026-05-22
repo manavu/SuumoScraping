@@ -32,7 +32,6 @@ namespace SuumoScraping
             var connectionString =
                 "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
             services.AddScoped<IScrapingContextFactory, ScrapingContextFactory>();
-            services.AddScoped<ISuumoDataProvider, SuumoDataProvider>();
             services.AddScoped<ISuumoHtmlFetcher, SuumoHtmlFetcher>();
             services.AddScoped<ISuumoHtmlParser, SuumoHtmlParser>();
             services.AddScoped<ISuumoGateway, SuumoGateway>();
