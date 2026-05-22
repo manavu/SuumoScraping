@@ -1,69 +1,73 @@
-namespace SuumoScraping.Models
+namespace SuumoScraping.UseCases
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
+    using SuumoScraping.Models;
 
-    public class BukkenService
+    public class SyncBukkensUseCase
     {
         private readonly IScrapingContextFactory _scrapingContextFactory;
-        private readonly ILogger<BukkenService> _logger;
 
-        public BukkenService(
+        private readonly ILogger<SyncBukkensUseCase> _logger;
+
+        public SyncBukkensUseCase(
             IScrapingContextFactory scrapingContextFactory,
-            ILogger<BukkenService> logger
+            ILogger<SyncBukkensUseCase> logger
         )
         {
             _scrapingContextFactory = scrapingContextFactory;
             _logger = logger;
         }
 
-        public void Execute(CancellationToken ct = default)
+        public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                var urls =
+                var urls = await (
                     from bukken in db.Bukkens
                     group bukken.DetailUrl by bukken.DetailUrl into g
-                    select g.Key;
+                    select g.Key
+                ).ToListAsync(cancellationToken);
 
-                foreach (var url in urls.ToList())
+                foreach (var url in urls)
                 {
-                    if (ct.IsCancellationRequested)
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        Console.WriteLine("Sync cancelled.");
+                        _logger.LogInformation("Sync cancelled.");
                         break;
                     }
 
                     _logger.LogInformation($"Syncing: {url}");
-                    SyncBukken(url);
+                    await this.SyncBukkenAsync(url, cancellationToken);
                 }
             }
         }
 
-        private void SyncBukken(string url)
+        private async Task SyncBukkenAsync(string url, CancellationToken cancellationToken)
         {
             using (var db = _scrapingContextFactory.Create())
-            using (var tx = db.Database.BeginTransaction())
+            using (var tx = await db.Database.BeginTransactionAsync(cancellationToken))
             {
                 db.Database.SetCommandTimeout(0);
 
-                var bukkens = db
+                var bukkens = await db
                     .Bukkens.Include(m => m.Files)
                         .ThenInclude(m => m.File)
                     .Include(m => m.FullText)
                     .Where(m => m.DetailUrl == url)
                     .OrderBy(m => m.ImportedDate)
-                    .ToList();
+                    .ToListAsync(cancellationToken);
 
-                var newBukken = db
+                var newBukken = await db
                     .NewBukkens.Include(m => m.PriceChangesets)
                     .Include(m => m.Files)
                         .ThenInclude(m => m.File)
-                    .SingleOrDefault(m => m.DetailUrl == url);
+                    .SingleOrDefaultAsync(m => m.DetailUrl == url, cancellationToken);
 
                 if (newBukken == null)
                 {
@@ -154,8 +158,8 @@ namespace SuumoScraping.Models
 
                 newBukken.ImportCount = bukkens.Count;
 
-                db.SaveChanges();
-                tx.Commit();
+                await db.SaveChangesAsync(cancellationToken);
+                await tx.CommitAsync(cancellationToken);
             }
         }
     }

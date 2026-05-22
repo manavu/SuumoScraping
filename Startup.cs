@@ -37,13 +37,13 @@ namespace SuumoScraping
             services.AddScoped<ISuumoHtmlParser, SuumoHtmlParser>();
             services.AddScoped<ISuumoGateway, SuumoGateway>();
             services.AddScoped<SuumoScraper>();
-            services.AddScoped<BukkenService>();
 
             // ユースケースの登録
             services.AddScoped<GetFilteredBukkensUseCase>();
             services.AddScoped<GetBukkenDetailsUseCase>();
             services.AddScoped<GetFileDataUseCase>();
             services.AddScoped<GetFloorPlansUseCase>();
+            services.AddScoped<SyncBukkensUseCase>();
 
             // Use MySQL provider from Oracle
             services.AddDbContext<ScrapingContext>(dbContextOptions =>

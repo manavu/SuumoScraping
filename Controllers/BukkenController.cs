@@ -24,19 +24,15 @@ namespace SuumoScraping.Controllers
 
         private readonly ILogger<SuumoDataProvider> _logger;
 
-        private readonly BukkenService _bukkenService;
-
         public BukkenController(
             GetFilteredBukkensUseCase getFilteredBukkensUseCase,
             GetBukkenDetailsUseCase getBukkenDetailsUseCase,
-            ILogger<SuumoDataProvider> logger,
-            BukkenService bukkenService
+            ILogger<SuumoDataProvider> logger
         )
         {
             _getFilteredBukkensUseCase = getFilteredBukkensUseCase;
             _getBukkenDetailsUseCase = getBukkenDetailsUseCase;
             _logger = logger;
-            _bukkenService = bukkenService;
         }
 
         [HttpGet]

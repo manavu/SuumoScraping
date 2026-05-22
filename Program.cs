@@ -11,6 +11,7 @@ namespace SuumoScraping
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Models;
+    using SuumoScraping.UseCases;
 
     public class Program
     {
@@ -39,9 +40,10 @@ namespace SuumoScraping
                     }
                     else if (args[0] == "sync")
                     {
-                        var service = scope.ServiceProvider.GetRequiredService<BukkenService>();
+                        var useCase =
+                            scope.ServiceProvider.GetRequiredService<SyncBukkensUseCase>();
                         Console.WriteLine("Starting sync (Press Ctrl+C to stop)...");
-                        service.Execute(cts.Token);
+                        await useCase.ExecuteAsync(cts.Token);
                         Console.WriteLine("Sync finished.");
                         return;
                     }
