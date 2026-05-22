@@ -5,8 +5,8 @@ namespace SuumoScraping.UseCases
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
+    using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Models;
 
     public class SyncBukkensUseCase
@@ -28,11 +28,11 @@ namespace SuumoScraping.UseCases
         {
             using (var db = _scrapingContextFactory.Create())
             {
-                var urls = await (
+                var query =
                     from bukken in db.Bukkens
                     group bukken.DetailUrl by bukken.DetailUrl into g
-                    select g.Key
-                ).ToListAsync(cancellationToken);
+                    select g.Key;
+                var urls = await db.ToListAsync(query, cancellationToken);
 
                 foreach (var url in urls)
                 {
@@ -51,29 +51,21 @@ namespace SuumoScraping.UseCases
         private async Task SyncBukkenAsync(string url, CancellationToken cancellationToken)
         {
             using (var db = _scrapingContextFactory.Create())
-            using (var tx = await db.Database.BeginTransactionAsync(cancellationToken))
+            using (var tx = await db.BeginTransactionAsync(cancellationToken))
             {
-                db.Database.SetCommandTimeout(0);
+                db.SetCommandTimeout(0);
 
-                var bukkens = await db
-                    .Bukkens.Include(m => m.Files)
-                        .ThenInclude(m => m.File)
-                    .Include(m => m.FullText)
-                    .Where(m => m.DetailUrl == url)
-                    .OrderBy(m => m.ImportedDate)
-                    .ToListAsync(cancellationToken);
-
-                var newBukken = await db
-                    .NewBukkens.Include(m => m.PriceChangesets)
-                    .Include(m => m.Files)
-                        .ThenInclude(m => m.File)
-                    .SingleOrDefaultAsync(m => m.DetailUrl == url, cancellationToken);
+                var bukkens = await db.GetBukkensWithFilesAndFullTextAsync(url, cancellationToken);
+                var newBukken = await db.GetNewBukkenWithPricesAndFilesAsync(
+                    url,
+                    cancellationToken
+                );
 
                 if (newBukken == null)
                 {
                     newBukken = new NewBukken();
                     newBukken.CreatedAt = bukkens.Min(m => m.ImportedDate);
-                    db.NewBukkens.Add(newBukken);
+                    db.AddNewBukken(newBukken);
                 }
 
                 foreach (var bukken in bukkens)
@@ -159,7 +151,7 @@ namespace SuumoScraping.UseCases
                 newBukken.ImportCount = bukkens.Count;
 
                 await db.SaveChangesAsync(cancellationToken);
-                await tx.CommitAsync(cancellationToken);
+                await db.CommitTransactionAsync(cancellationToken);
             }
         }
     }

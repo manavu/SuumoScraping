@@ -111,7 +111,13 @@ namespace SuumoScraping.Models
                 using var db = this._scrapingContextFactory.Create();
 
                 if (
-                    db.Bukkens.Any(m => m.ImportedDate == _importedDate && m.DetailUrl == detailUrl)
+                    await db.AnyAsync(
+                            db.Bukkens.Where(m =>
+                                m.ImportedDate == _importedDate && m.DetailUrl == detailUrl
+                            ),
+                            ct
+                        )
+                        .ConfigureAwait(false)
                 )
                 {
                     this._logger.LogInformation(
@@ -171,7 +177,11 @@ namespace SuumoScraping.Models
                         var imageAlt = image.Alt;
 
                         // URLのファイルがあればそれを使う
-                        var file = db.Files.FirstOrDefault(m => m.Url == imageUrl);
+                        var file = await db.FirstOrDefaultAsync(
+                                db.Files.Where(m => m.Url == imageUrl),
+                                ct
+                            )
+                            .ConfigureAwait(false);
                         if (file == null)
                         {
                             var fileData = await this
@@ -195,8 +205,8 @@ namespace SuumoScraping.Models
                         bukken.Files.Add(bukkenFile);
                     }
 
-                    db.Bukkens.Add(bukken);
-                    db.SaveChanges();
+                    db.AddBukken(bukken);
+                    await db.SaveChangesAsync(ct).ConfigureAwait(false);
 
                     this._logger.LogInformation(
                         "物件データの取得・DB保存に成功しました: {Url} ({Title})",

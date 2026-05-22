@@ -4,8 +4,7 @@ namespace SuumoScraping.UseCases
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using SuumoScraping.Models;
+    using SuumoScraping.Domain.Gateways;
     using SuumoScraping.ViewModels;
 
     public class GetFloorPlansUseCase
@@ -14,16 +13,16 @@ namespace SuumoScraping.UseCases
 
         public GetFloorPlansUseCase(IScrapingContextFactory scrapingContextFactory)
         {
-            _scrapingContextFactory = scrapingContextFactory;
+            this._scrapingContextFactory = scrapingContextFactory;
         }
 
         public async Task<IList<FloorPlanInfo>> ExecuteAsync(
             CancellationToken cancellationToken = default
         )
         {
-            using (var db = _scrapingContextFactory.Create())
+            using (var db = this._scrapingContextFactory.Create())
             {
-                return await db
+                var query = db
                     .NewBukkens.SelectMany(m => m.Files)
                     .Where(m => m.Type == "間取り図")
                     .Select(m => new FloorPlanInfo()
@@ -32,8 +31,10 @@ namespace SuumoScraping.UseCases
                         BukkenId = m.NewBukken.Id,
                         FloorArea = m.NewBukken.FloorArea,
                     })
-                    .Take(1000)
-                    .ToListAsync(cancellationToken);
+                    .Take(1000);
+
+                var list = await db.ToListAsync(query, cancellationToken).ConfigureAwait(false);
+                return list;
             }
         }
     }

@@ -3,8 +3,7 @@ namespace SuumoScraping.UseCases
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using SuumoScraping.Models;
+    using SuumoScraping.Domain.Gateways;
 
     public class GetFileDataUseCase
     {
@@ -12,7 +11,7 @@ namespace SuumoScraping.UseCases
 
         public GetFileDataUseCase(IScrapingContextFactory scrapingContextFactory)
         {
-            _scrapingContextFactory = scrapingContextFactory;
+            this._scrapingContextFactory = scrapingContextFactory;
         }
 
         public async Task<(byte[] FileData, string ContentType)?> ExecuteAsync(
@@ -20,12 +19,13 @@ namespace SuumoScraping.UseCases
             CancellationToken cancellationToken = default
         )
         {
-            using (var db = _scrapingContextFactory.Create())
+            using (var db = this._scrapingContextFactory.Create())
             {
-                var file = await db
+                var query = db
                     .Files.Where(m => m.Id == id)
-                    .Select(m => new { m.FileData, m.ContentType })
-                    .SingleOrDefaultAsync(cancellationToken);
+                    .Select(m => new { m.FileData, m.ContentType });
+                var file = await db.SingleOrDefaultAsync(query, cancellationToken)
+                    .ConfigureAwait(false);
 
                 if (file == null)
                 {

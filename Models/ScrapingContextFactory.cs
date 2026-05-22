@@ -2,14 +2,9 @@ namespace SuumoScraping.Models
 {
     using System;
     using Microsoft.EntityFrameworkCore;
-    // using System.Data.Entity.Infrastructure;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-
-    public interface IScrapingContextFactory // : IDbContextFactory<ScrapingContext>
-    {
-        public ScrapingContext Create();
-    }
+    using SuumoScraping.Domain.Gateways;
 
     public class ScrapingContextFactory : IScrapingContextFactory
     {
@@ -22,27 +17,14 @@ namespace SuumoScraping.Models
             _configuration = configuration;
         }
 
-        public ScrapingContext Create()
+        public IScrapingContext Create()
         {
             var connectionString =
                 "server=db;database=scrapingdb;port=3306;uid=docker;password=docker;characterset=utf8;";
-            // var connectionString = "server=db;database=ScrapingDb2;port=3306;uid=root;password=root;characterset=utf8;";
-
-            /*
-            if (_configuration != null)
-            {
-                connectionString = this._configuration["ConnectionStrings:ScrapingDb"];
-            }*/
 
             var optionsBuilder = new DbContextOptionsBuilder<ScrapingContext>();
 
-            optionsBuilder
-                .UseMySQL(connectionString)
-                // The following three options help with debugging, but should
-                // be changed or removed for production.
-                .LogTo(Console.WriteLine, LogLevel.Warning);
-            // .EnableSensitiveDataLogging()
-            // .EnableDetailedErrors();
+            optionsBuilder.UseMySQL(connectionString).LogTo(Console.WriteLine, LogLevel.Warning);
 
             return new ScrapingContext(optionsBuilder.Options);
         }
