@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SuumoScraping.csproj" />
+    <ProjectReference Include="..\SuumoScraping.Web\SuumoScraping.Web.csproj" />
     <ProjectReference Include="..\SuumoScraping.Domain\SuumoScraping.Domain.csproj" />
     <ProjectReference Include="..\SuumoScraping.Infrastructure\SuumoScraping.Infrastructure.csproj" />
   </ItemGroup>

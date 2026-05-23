@@ -32,7 +32,7 @@
         "args": [
             "watch",
             "run",
-            "${workspaceFolder}/SuumoScraping.csproj",
+            "${workspaceFolder}/SuumoScraping.Web/SuumoScraping.Web.csproj",
             "/property:GenerateFullPaths=true",
             "/consoleloggerparameters:NoSummary"
         ],
