@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace SuumoScraping.ViewModels
+namespace SuumoScraping.Domain.Models
 {
     public class FloorPlanInfo
     {

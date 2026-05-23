@@ -6,7 +6,6 @@ namespace SuumoScraping.Domain.Gateways
     using System.Threading;
     using System.Threading.Tasks;
     using SuumoScraping.Domain.Models;
-    using SuumoScraping.ViewModels;
 
     public interface IScrapingContext : IDisposable, IAsyncDisposable
     {

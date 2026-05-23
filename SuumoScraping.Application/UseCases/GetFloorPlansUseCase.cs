@@ -1,11 +1,11 @@
-namespace SuumoScraping.UseCases
+namespace SuumoScraping.Application.UseCases
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using SuumoScraping.Domain.Gateways;
-    using SuumoScraping.ViewModels;
+    using SuumoScraping.Domain.Models;
 
     public class GetFloorPlansUseCase
     {

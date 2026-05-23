@@ -1,4 +1,4 @@
-namespace SuumoScraping.Extensions
+namespace SuumoScraping.Domain.Extensions
 {
     using System;
     using System.Collections.Generic;

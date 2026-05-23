@@ -4,10 +4,8 @@ namespace SuumoScraping.Domain.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
 
     [Table("files")]
-    [Index(nameof(Url), Name = "IX_Files_Url")]
     public partial class File
     {
         public File()

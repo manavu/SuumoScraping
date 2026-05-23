@@ -1,4 +1,4 @@
-namespace SuumoScraping.UseCases
+namespace SuumoScraping.Application.UseCases
 {
     using System.Linq;
     using System.Threading;

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -20,5 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SuumoScraping.csproj" />
+    <ProjectReference Include="..\SuumoScraping.Domain\SuumoScraping.Domain.csproj" />
+    <ProjectReference Include="..\SuumoScraping.Infrastructure\SuumoScraping.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

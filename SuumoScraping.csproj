@@ -6,14 +6,8 @@
     <UserSecretsId>bde44560-6d21-40eb-bd09-82c35fa5c7cf</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="NonFactors.Grid.Mvc6" Version="8.0.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.1" />
-    <PackageReference Include="MySql.EntityFrameworkCore" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
-    <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="10.0.9" />
     <PackageReference
       Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
       Version="10.0.1"
@@ -25,6 +19,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="SuumoScraping.Domain\SuumoScraping.Domain.csproj" />
+    <ProjectReference Include="SuumoScraping.Application\SuumoScraping.Application.csproj" />
+    <ProjectReference Include="SuumoScraping.Infrastructure\SuumoScraping.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Views\Bukken\" />
     <Folder Include="Views\File\" />
     <Folder Include="wwwroot\lib\" />
@@ -34,5 +33,17 @@
     <Content Remove="SuumoScraping.Tests\**" />
     <EmbeddedResource Remove="SuumoScraping.Tests\**" />
     <None Remove="SuumoScraping.Tests\**" />
+    <Compile Remove="SuumoScraping.Domain\**" />
+    <Compile Remove="SuumoScraping.Application\**" />
+    <Compile Remove="SuumoScraping.Infrastructure\**" />
+    <Content Remove="SuumoScraping.Domain\**" />
+    <Content Remove="SuumoScraping.Application\**" />
+    <Content Remove="SuumoScraping.Infrastructure\**" />
+    <EmbeddedResource Remove="SuumoScraping.Domain\**" />
+    <EmbeddedResource Remove="SuumoScraping.Application\**" />
+    <EmbeddedResource Remove="SuumoScraping.Infrastructure\**" />
+    <None Remove="SuumoScraping.Domain\**" />
+    <None Remove="SuumoScraping.Application\**" />
+    <None Remove="SuumoScraping.Infrastructure\**" />
   </ItemGroup>
 </Project>

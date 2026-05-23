@@ -11,10 +11,10 @@ namespace SuumoScraping.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
+    using SuumoScraping.Application.UseCases;
+    using SuumoScraping.Domain.Extensions;
     using SuumoScraping.Domain.Models;
     using SuumoScraping.Extensions;
-    using SuumoScraping.UseCases;
-    using SuumoScraping.ViewModels;
 
     public class BukkenController : Controller
     {

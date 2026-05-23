@@ -7,9 +7,8 @@ namespace SuumoScraping.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using SuumoScraping.Application.UseCases;
     using SuumoScraping.Domain.Models;
-    using SuumoScraping.UseCases;
-    using SuumoScraping.ViewModels;
 
     public class FileController : Controller
     {

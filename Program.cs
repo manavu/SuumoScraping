@@ -10,8 +10,8 @@ namespace SuumoScraping
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using SuumoScraping.Application.UseCases;
     using SuumoScraping.Domain.Services;
-    using SuumoScraping.UseCases;
 
     public class Program
     {

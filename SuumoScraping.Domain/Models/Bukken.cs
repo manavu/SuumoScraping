@@ -4,12 +4,8 @@ namespace SuumoScraping.Domain.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
 
     [Table("bukkens")]
-    [Index(nameof(DetailUrl), nameof(ImportedDate), Name = "IX_Bukkens_DetailUrl_ImportedDate")]
-    [Index(nameof(ImportedDate), nameof(DetailUrl), Name = "IX_Bukkens_ImportedDate_DetailUrl")]
-    // [Index(nameof(FullText.Id), Name="IX_FullText_Id")]  // こういうことはできないので、OnModelCreation で対応するしかないかも
     public partial class Bukken
     {
         public Bukken()

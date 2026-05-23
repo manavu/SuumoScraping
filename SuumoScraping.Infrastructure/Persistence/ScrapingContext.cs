@@ -11,7 +11,6 @@ namespace SuumoScraping.Infrastructure.Persistence
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Domain.Models;
-    using SuumoScraping.ViewModels;
 
     public partial class ScrapingContext : DbContext, IScrapingContext
     {
@@ -33,7 +32,35 @@ namespace SuumoScraping.Infrastructure.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Company Value Object configuration (Owned entity)
+            modelBuilder.Entity<Bukken>().OwnsOne(b => b.Company);
+            modelBuilder.Entity<NewBukken>().OwnsOne(b => b.Company);
+
+            // Indexes
+            modelBuilder.Entity<File>().HasIndex(f => f.Url, "IX_Files_Url");
+
+            modelBuilder
+                .Entity<Bukken>()
+                .HasIndex(
+                    b => new { b.DetailUrl, b.ImportedDate },
+                    "IX_Bukkens_DetailUrl_ImportedDate"
+                );
+            modelBuilder
+                .Entity<Bukken>()
+                .HasIndex(
+                    b => new { b.ImportedDate, b.DetailUrl },
+                    "IX_Bukkens_ImportedDate_DetailUrl"
+                );
+
+            modelBuilder
+                .Entity<NewBukken>()
+                .HasIndex(b => b.DetailUrl, "IX_Bukkens_DetailUrl")
+                .IsUnique();
+        }
 
         public virtual DbSet<NewBukken> NewBukkens { get; set; }
 

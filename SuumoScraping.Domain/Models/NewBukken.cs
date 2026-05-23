@@ -4,10 +4,8 @@ namespace SuumoScraping.Domain.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
 
     [Table("newbukkens")]
-    [Index(nameof(DetailUrl), Name = "IX_Bukkens_DetailUrl", IsUnique = true)]
     public partial class NewBukken
     {
         public NewBukken()

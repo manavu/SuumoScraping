@@ -3,9 +3,7 @@ namespace SuumoScraping.Domain.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using Microsoft.EntityFrameworkCore;
 
-    [Owned]
     public class Company
     {
         [MaxLength(100)]

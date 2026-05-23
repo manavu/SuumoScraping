@@ -1,4 +1,4 @@
-namespace SuumoScraping.ViewModels
+namespace SuumoScraping.Domain.Models
 {
     using System;
     using System.Collections.Generic;

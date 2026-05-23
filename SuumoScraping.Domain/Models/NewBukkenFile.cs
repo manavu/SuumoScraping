@@ -4,23 +4,19 @@ namespace SuumoScraping.Domain.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
 
-    [Table("prices")]
-    public partial class Price
+    [Table("newbukkenfiles")]
+    public partial class NewBukkenFile
     {
         [Key]
         public int Id { get; set; }
 
-        public DateTime ChangedAt { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Type { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Min { get; set; }
-
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal? Max { get; set; }
-
-        public string Text { get; set; }
+        [ForeignKey("File_Id")]
+        public virtual File File { get; set; }
 
         [ForeignKey("NewBukken_Id")]
         public virtual NewBukken NewBukken { get; set; }

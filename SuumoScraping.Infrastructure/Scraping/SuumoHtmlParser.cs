@@ -7,9 +7,9 @@ namespace SuumoScraping.Infrastructure.Scraping
     using HtmlAgilityPack;
     using Microsoft.Extensions.Logging;
     using SuumoScraping.Domain.Exceptions;
+    using SuumoScraping.Domain.Extensions;
     using SuumoScraping.Domain.Gateways;
     using SuumoScraping.Domain.Models;
-    using SuumoScraping.Extensions;
 
     public class SuumoHtmlParser : ISuumoHtmlParser
     {
