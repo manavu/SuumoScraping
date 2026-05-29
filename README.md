@@ -46,18 +46,28 @@ $ dotnet run -- sync
 ## モデルに変更を加えたら
 
 ef ツールをインストールする
-```
+```bash
 $ dotnet tool restore
 ```
 
 コードがコンパイルされ追加された変更点のみのマイグレーションファイルを生成する
-```
-$ dotnet dotnet-ef migrations add 追加するマイグレーションファイル名
+```bash
+# ソリューションルートから実行する場合 (推奨)
+$ dotnet ef migrations add 追加するマイグレーションファイル名 --project SuumoScraping.Infrastructure --startup-project SuumoScraping.Web
+
+# または、プロジェクトディレクトリに移動して実行する場合
+$ cd SuumoScraping.Infrastructure
+$ dotnet ef migrations add 追加するマイグレーションファイル名 --startup-project ../SuumoScraping.Web
 ```
 
-追加されたマイグレーションファイルを実行する
-```
-$ dotnet dotnet-ef database update
+追加されたマイグレーションファイルを実行してデータベースに反映する
+```bash
+# ソリューションルートから実行する場合 (推奨)
+$ dotnet ef database update --project SuumoScraping.Infrastructure --startup-project SuumoScraping.Web
+
+# または、プロジェクトディレクトリに移動して実行する場合
+$ cd SuumoScraping.Infrastructure
+$ dotnet ef database update --startup-project ../SuumoScraping.Web
 ```
 
 ## datetime(6) になる
