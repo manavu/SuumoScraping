@@ -11,8 +11,6 @@ namespace SuumoScraping.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
-
             migrationBuilder.CreateTable(
                 name: "bukkenfulltexts",
                 columns: table => new
