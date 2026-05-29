@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using MySql.EntityFrameworkCore.Metadata;
@@ -11,7 +11,7 @@ namespace SuumoScraping.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase().Annotation("MySQL:CharSet", "utf8");
+
 
             migrationBuilder.CreateTable(
                 name: "bukkenfulltexts",
