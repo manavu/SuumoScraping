@@ -21,24 +21,46 @@ $ dotnet user-secrets set "ConnectionStrings:ScrapingDb" "server=localhost;datab
 
 ## 実行するには
 
-### Web サーバーの起動
+便利なショートカット用のスクリプト（`run.sh`）を用意しています。ソリューションのルートディレクトリ（`/workspace`）から簡単に実行できます。
+
+### A. ショートカットスクリプトを使う場合 (推奨)
+
 ```bash
-$ dotnet run
+# Webサーバーの起動 (http://localhost:5000)
+$ ./run.sh web
+
+# スクレイピングの実行
+$ ./run.sh scrape
+
+# データの同期（スクレイピング済みデータの集計）
+$ ./run.sh sync
+
+# データベースマイグレーションの適用
+$ ./run.sh db-update
 ```
-ブラウザで `http://localhost:5000` にアクセスしてください。
 
-### コマンドラインからの実行
+---
 
-スクレイピングやデータの同期をコマンドラインから直接実行できます。
+### B. 通常の dotnet コマンドを使う場合
+
+ソリューションのルートディレクトリ（`/workspace`）から直接実行する場合は、以下のように `--project` オプションを明示してください。
+
+#### Web サーバーの起動
+```bash
+$ dotnet run --project SuumoScraping.Web
+```
+起動後、ブラウザで `http://localhost:5000` にアクセスしてください。
+
+#### コマンドラインからの実行
 
 **スクレイピングの実行:**
 ```bash
-$ dotnet run -- scrape
+$ dotnet run --project SuumoScraping.Web -- scrape
 ```
 
 **データの同期（スクレイピング済みデータの集計）:**
 ```bash
-$ dotnet run -- sync
+$ dotnet run --project SuumoScraping.Web -- sync
 ```
 
 ※ 実行中に `Ctrl+C` を押すことで、安全に中断できます。
@@ -46,18 +68,28 @@ $ dotnet run -- sync
 ## モデルに変更を加えたら
 
 ef ツールをインストールする
-```
+```bash
 $ dotnet tool restore
 ```
 
 コードがコンパイルされ追加された変更点のみのマイグレーションファイルを生成する
-```
-$ dotnet dotnet-ef migrations add 追加するマイグレーションファイル名
+```bash
+# ソリューションルートから実行する場合 (推奨)
+$ dotnet ef migrations add 追加するマイグレーションファイル名 --project SuumoScraping.Infrastructure --startup-project SuumoScraping.Web
+
+# または、プロジェクトディレクトリに移動して実行する場合
+$ cd SuumoScraping.Infrastructure
+$ dotnet ef migrations add 追加するマイグレーションファイル名 --startup-project ../SuumoScraping.Web
 ```
 
-追加されたマイグレーションファイルを実行する
-```
-$ dotnet dotnet-ef database update
+追加されたマイグレーションファイルを実行してデータベースに反映する
+```bash
+# ソリューションルートから実行する場合 (推奨)
+$ dotnet ef database update --project SuumoScraping.Infrastructure --startup-project SuumoScraping.Web
+
+# または、プロジェクトディレクトリに移動して実行する場合
+$ cd SuumoScraping.Infrastructure
+$ dotnet ef database update --startup-project ../SuumoScraping.Web
 ```
 
 ## datetime(6) になる
