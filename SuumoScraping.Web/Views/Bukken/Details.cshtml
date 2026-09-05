@@ -178,7 +178,7 @@
 
         @foreach (var file in Model.Files)
         {
-            var imgUrlAction = Url.Action("Data", "File", new { id = file.Id });
+            var imgUrlAction = Url.Action("Show", "File", new { id = file.Id });
 
             <dt class="col-sm-3">
                 @Html.DisplayFor(model => file.Title)
